@@ -55,7 +55,16 @@ function hasDeletionIntent(message = '') {
 }
 
 app.get('/health', (req, res) => {
-  res.json({ ok: true, port: PORT, kbCount: knowledgeBase.getKbCount?.() ?? 0 });
+  const kbCount = knowledgeBase.getKbCount?.() ?? 0;
+  const debugInfo = {
+    ok: true,
+    port: PORT,
+    kbCount: kbCount,
+    nodeEnv: process.env.NODE_ENV || 'development',
+    cwd: process.cwd(),
+    __dirname: __dirname
+  };
+  res.json(debugInfo);
 });
 
 app.get('/api/messages/:conversationId', async (req, res) => {

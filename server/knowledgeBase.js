@@ -86,16 +86,27 @@ function parseKnowledgeFile(rawText) {
 
 function trainKnowledgeBase() {
   try {
-    // Try local path first (for Vercel deployment)
-    let kbPath = path.join(__dirname, 'english_version.txt');
-    
-    // Fallback to parent directory if not found
-    if (!fs.existsSync(kbPath)) {
-      kbPath = path.join(__dirname, '..', 'knowledge', 'english_version.txt');
+    // Try multiple paths to find the KB file
+    const possiblePaths = [
+      path.join(__dirname, 'english_version.txt'),                          // ./server/english_version.txt
+      path.join(__dirname, '..', 'knowledge', 'english_version.txt'),       // ./knowledge/english_version.txt
+      path.join(__dirname, '..', 'server', 'english_version.txt'),          // ./../server/english_version.txt
+      path.join(process.cwd(), 'server', 'english_version.txt'),           // Vercel root: ./server/english_version.txt
+      path.join(process.cwd(), 'knowledge', 'english_version.txt'),        // Vercel root: ./knowledge/english_version.txt
+    ];
+
+    let kbPath = null;
+    for (const candidate of possiblePaths) {
+      if (fs.existsSync(candidate)) {
+        kbPath = candidate;
+        console.log(`📍 Found KB at: ${kbPath}`);
+        break;
+      }
     }
     
-    if (!fs.existsSync(kbPath)) {
-      console.log('⚠️ Knowledge file not found at:', kbPath);
+    if (!kbPath) {
+      console.log('⚠️ Knowledge file not found at any location:');
+      possiblePaths.forEach(p => console.log(`   - ${p}`));
       KB.length = 0;
       chunks.length = 0;
       return;
@@ -110,7 +121,7 @@ function trainKnowledgeBase() {
     chunks.length = 0;
     chunks.push(...KB.map(e => `Q: ${e.q}\nA: ${e.a}`));
 
-    console.log(`📚 KB loaded: ${KB.length}`);
+    console.log(`📚 KB loaded: ${KB.length} Q&A pairs from ${kbPath}`);
   } catch (e) {
     console.log('❌ KB train error:', e.message);
     KB.length = 0;
