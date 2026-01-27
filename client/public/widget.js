@@ -5,12 +5,7 @@
   
   // Auto-detect API URL based on current location
   const getAPIURL = () => {
-    const currentDomain = window.location.origin;
-    const storedURL = sessionStorage.getItem('aitel_api_url');
-    
-    if (storedURL) return storedURL;
-    
-    // Use production backend URL
+    // Always use production backend URL
     return 'https://server-three-black.vercel.app/api/chat';
   };
 
