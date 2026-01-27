@@ -85,10 +85,15 @@
           border-radius: 50%;
         }
 
-        .aitel-widget-btn img {
-          width: 80%;
-          height: 80%;
-          object-fit: contain;
+        /* Floating chat icon inside button */
+        .aitel-widget-btn::after {
+          content: '';
+          position: absolute;
+          width: 28px;
+          height: 24px;
+          background: white;
+          border-radius: 6px;
+          box-shadow: 0 0 0 2px rgba(255, 255, 255, 0.3);
           z-index: 1;
         }
 
@@ -300,6 +305,47 @@
           align-self: flex-end;
           margin-right: 0;
           box-shadow: 0 3px 10px rgba(99, 102, 241, 0.35);
+        }
+
+        /* ===== TYPING INDICATOR ===== */
+        .aitel-typing-indicator {
+          display: flex;
+          align-items: center;
+          gap: 4px;
+          padding: 12px 15px;
+          background: white;
+          border: 1px solid #e5e7eb;
+          border-radius: 14px;
+          align-self: flex-start;
+          color: #666;
+          font-size: 13px;
+        }
+
+        .aitel-typing-indicator span {
+          width: 6px;
+          height: 6px;
+          border-radius: 50%;
+          background: #6366f1;
+          animation: typing 1.4s infinite;
+        }
+
+        .aitel-typing-indicator span:nth-child(2) {
+          animation-delay: 0.2s;
+        }
+
+        .aitel-typing-indicator span:nth-child(3) {
+          animation-delay: 0.4s;
+        }
+
+        @keyframes typing {
+          0%, 60%, 100% {
+            opacity: 0.3;
+            transform: translateY(0);
+          }
+          30% {
+            opacity: 1;
+            transform: translateY(-8px);
+          }
         }
 
         /* ===== INPUT AREA ===== */
@@ -581,9 +627,7 @@
       document.head.appendChild(style);
 
       const html = `
-        <button class="aitel-widget-btn" id="aitelWidgetBtn" title="Chat with AI Mate">
-          <img src="${config.ICON}" alt="AI Mate" />
-        </button>
+        <button class="aitel-widget-btn" id="aitelWidgetBtn" title="Chat with Anu"></button>
 
         <div class="aitel-widget-panel" id="aitelWidgetPanel">
           <div class="aitel-widget-header">
@@ -687,6 +731,23 @@
       messagesContainer.scrollTop = messagesContainer.scrollHeight;
     }
 
+    displayTypingIndicator() {
+      const messagesContainer = document.getElementById('aitelWidgetMessages');
+      const typingDiv = document.createElement('div');
+      typingDiv.className = 'aitel-typing-indicator';
+      typingDiv.id = 'aitel-typing-indicator';
+      typingDiv.innerHTML = '<span></span><span></span><span></span>';
+      messagesContainer.appendChild(typingDiv);
+      messagesContainer.scrollTop = messagesContainer.scrollHeight;
+    }
+
+    removeTypingIndicator() {
+      const typingDiv = document.getElementById('aitel-typing-indicator');
+      if (typingDiv) {
+        typingDiv.remove();
+      }
+    }
+
     async sendMessage() {
       const input = document.getElementById('aitelWidgetInput');
       const message = input.value.trim();
@@ -697,6 +758,9 @@
       input.value = '';
       input.focus();
       this.isLoading = true;
+      
+      // Show typing indicator
+      this.displayTypingIndicator();
 
       try {
         const chatEndpoint = `${config.API_URL}/api/chat`;
@@ -716,6 +780,9 @@
 
         const data = await response.json();
 
+        // Remove typing indicator
+        this.removeTypingIndicator();
+
         if (data.answer) {
           this.displayMessage(data.answer, 'bot');
           if (data.conversationId && !this.conversationId) {
@@ -727,19 +794,22 @@
           const messageText = message.toLowerCase();
           const answerText = data.answer.toLowerCase();
           
+          // Only trigger for meaningful keywords (exclude simple greetings)
+          const isGreeting = ['hi', 'hello', 'hey', 'ok', 'okay', 'thanks', 'thank you'].includes(messageText);
+          
           // Sales contact: packages, amounts, discounts, pricing, costs
-          if (messageText.includes('package') || messageText.includes('amount') || 
+          if (!isGreeting && (messageText.includes('package') || messageText.includes('amount') || 
               messageText.includes('discount') || messageText.includes('price') || 
               messageText.includes('cost') || messageText.includes('pricing') ||
-              messageText.includes('budget') || messageText.includes('plan')) {
+              messageText.includes('budget') || messageText.includes('plan'))) {
             setTimeout(() => this.showContactForm('sales'), 800);
           } 
-          // Engineer contact: Question outside knowledge base
-          else if (data.route === 'llm_fallback' || data.confidence < 0.4 || 
+          // Engineer contact: Question outside knowledge base (but not greetings)
+          else if (!isGreeting && (data.route === 'llm_fallback' || data.confidence < 0.4 || 
                    answerText.includes('don\'t have information') || 
                    answerText.includes('not available') ||
                    answerText.includes('outside') ||
-                   data.usedLLMFallback === true) {
+                   data.usedLLMFallback === true)) {
             setTimeout(() => this.showContactForm('engineers'), 800);
           }
         } else {
@@ -747,6 +817,7 @@
         }
       } catch (error) {
         console.error('Chat error:', error);
+        this.removeTypingIndicator();
         this.displayMessage('Connection error. Please check your internet and try again.', 'bot');
       } finally {
         this.isLoading = false;
