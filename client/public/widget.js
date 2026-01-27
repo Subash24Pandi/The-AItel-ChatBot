@@ -765,19 +765,18 @@
           const messageText = message.toLowerCase();
           const answerText = data.answer.toLowerCase();
           
-          // Only trigger for meaningful keywords (exclude simple greetings and KB responses)
+          // Check if it's a greeting
           const isGreeting = ['hi', 'hello', 'hey', 'ok', 'okay', 'thanks', 'thank you', 'yes', 'no'].includes(messageText);
-          const hasKBInfo = data.confidence > 0.5 && data.route !== 'llm_fallback';
           
-          // ONLY show Sales popup if: user asked about pricing AND answer came from KB
-          if (!isGreeting && !hasKBInfo && (messageText.includes('package') || messageText.includes('amount') || 
+          // Show Sales popup if user asked about pricing/budget keywords
+          if (!isGreeting && (messageText.includes('package') || messageText.includes('amount') || 
               messageText.includes('discount') || messageText.includes('price') || 
               messageText.includes('cost') || messageText.includes('pricing') ||
               messageText.includes('budget') || messageText.includes('plan'))) {
             setTimeout(() => this.showContactForm('sales'), 800);
           } 
-          // ONLY show Engineer popup if: answer is clearly from LLM (outside KB) AND not a greeting
-          else if (!isGreeting && data.route === 'llm_fallback' && data.confidence < 0.3) {
+          // Show Engineer popup if question is outside KB (LLM fallback)
+          else if (!isGreeting && data.route === 'llm_fallback') {
             setTimeout(() => this.showContactForm('engineers'), 800);
           }
         } else {
@@ -794,6 +793,11 @@
     showContactForm(department) {
       const overlay = document.getElementById('aitelWidgetModalOverlay');
       const modal = document.getElementById('aitelWidgetModal');
+
+      if (!overlay || !modal) {
+        console.error('Modal elements not found');
+        return;
+      }
 
       const forms = {
         sales: `
