@@ -156,28 +156,57 @@
         }
 
         .aitel-widget-header-icon {
-          width: 56px;
-          height: 56px;
+          display: none;
+        }
+
+        .aitel-floating-icon {
+          width: 60px;
+          height: 60px;
           background: rgba(255, 255, 255, 0.2);
-          border-radius: 14px;
+          border-radius: 16px;
+          position: relative;
           display: flex;
           align-items: center;
           justify-content: center;
-          backdrop-filter: blur(12px);
-          box-shadow: 0 4px 15px rgba(0, 0, 0, 0.15);
+          animation: float 3s ease-in-out infinite;
+          margin-bottom: 12px;
         }
 
-        .aitel-widget-header-icon img {
-          width: 42px;
-          height: 42px;
-          object-fit: contain;
+        .aitel-floating-icon::before {
+          content: '';
+          position: absolute;
+          width: 35px;
+          height: 30px;
+          background: white;
+          border-radius: 8px;
+          box-shadow: 0 0 0 2px rgba(255, 255, 255, 0.5);
+        }
+
+        .aitel-floating-icon::after {
+          content: '';
+          position: absolute;
+          width: 28px;
+          height: 22px;
+          background: linear-gradient(135deg, #6366f1 0%, #8b5cf6 100%);
+          border-radius: 6px;
+          z-index: 1;
+          clip-path: polygon(0 0, 100% 0, 100% 60%, 50% 100%, 0 60%);
+        }
+
+        @keyframes float {
+          0%, 100% {
+            transform: translateY(0px);
+          }
+          50% {
+            transform: translateY(-8px);
+          }
         }
 
         .aitel-widget-header-content {
           display: flex;
           flex-direction: column;
           align-items: center;
-          gap: 6px;
+          gap: 8px;
           z-index: 1;
         }
 
@@ -523,10 +552,8 @@
         <div class="aitel-widget-panel" id="aitelWidgetPanel">
           <div class="aitel-widget-header">
             <button class="aitel-widget-close" id="aitelWidgetCloseBtn">✕</button>
-            <div class="aitel-widget-header-icon">
-              <img src="${config.ICON}" alt="Anu" />
-            </div>
             <div class="aitel-widget-header-content">
+              <div class="aitel-floating-icon"></div>
               <h3>${config.NAME}</h3>
             </div>
           </div>
