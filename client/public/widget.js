@@ -3,9 +3,13 @@
   const params = new URLSearchParams(document.currentScript.src.split('?')[1]);
   const appId = params.get('appId') || 'default';
   
-  // API URL Configuration
+  // API URL Configuration - Auto-detect environment
   const getAPIURL = () => {
-    return 'https://server-three-black.vercel.app';
+    const hostname = window.location.hostname;
+    if (hostname === 'localhost' || hostname === '127.0.0.1') {
+      return 'http://localhost:3000'; // Local development
+    }
+    return 'https://server-three-black.vercel.app'; // Production Vercel
   };
 
   // Aitel Logo - Clean Professional SVG (no text rendering issues)

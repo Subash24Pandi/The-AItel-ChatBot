@@ -195,8 +195,69 @@ Return only the normalized question, nothing else:`;
       });
     }
 
-    // Step 4: No good KB match found - return "I don't have that information"
-    // instead of generating LLM content
+    // Step 4: KB not found - Check if should use LLM with system prompt as fallback
+    // This only happens if KB count is 0 (KB failed to load)
+    const kbCount = knowledgeBase.getKbCount?.() ?? 0;
+    const shouldUseLLMFallback = kbCount === 0; // Only if KB completely failed
+    
+    if (shouldUseLLMFallback) {
+      // Use LLM with detailed system prompt containing KB knowledge
+      const systemPrompt = `You are Aitel's intelligent AI customer support assistant. You must provide helpful, accurate responses based on the following knowledge about Aitel AI Agent Platform:
+
+AITEL PLATFORM KNOWLEDGE:
+1. Login: Users must select client portal, enter mobile number, receive OTP, enter OTP to log in
+2. Call History: Access via Dashboard → Call History to view all call records  
+3. Making Calls: Dashboard → Make a Call → "Initiate a Manual Call" → choose agent → enter destination number → make call
+4. Campaigns: Dashboard → Campaigns → "Create Campaign" → upload CSV with mobile numbers → create campaign
+5. Agents: Dashboard → My Agents to view all agents and their details
+6. Analytics: Dashboard → Campaigns → Analytics for campaign and AI analytics
+
+IMPORTANT RULES:
+- Only answer questions about Aitel platform features listed above
+- Be concise and professional
+- If asked about features not listed above, say: "I don't have information about that. Please contact our support team."
+- Do not make up or assume features not mentioned above
+- Guide users to relevant dashboard sections
+
+User Question: "${message}"
+
+Provide a helpful, accurate response:`;
+
+      try {
+        const llmPromise = llmService.chat(
+          [{ role: 'user', content: systemPrompt }],
+          ''
+        );
+
+        const timeoutPromise = new Promise((resolve) => {
+          setTimeout(() => {
+            resolve({ success: false, message: '', error: 'LLM_TIMEOUT' });
+          }, 10000); // 10 second timeout for fallback LLM
+        });
+
+        const llmResponse = await Promise.race([llmPromise, timeoutPromise]);
+
+        if (llmResponse.success && llmResponse.message) {
+          const answer = (llmResponse.message || '').trim();
+          const botMsgRow = await supabaseService.saveMessage(convId, 'bot', answer);
+
+          return res.json({
+            answer: answer,
+            confidence: 0.7,
+            route: 'llm_fallback',
+            showContactCard: false,
+            conversationId: convId,
+            userMessageId: userMsgRow?.id,
+            botMessageId: botMsgRow?.id,
+            llmUsed: 'fallback_system_prompt'
+          });
+        }
+      } catch (e) {
+        console.error('LLM fallback error:', e.message);
+      }
+    }
+
+    // Fallback response if both KB and LLM fail
     const noAnswerMessage = 'I don\'t have information about that. Please contact our support team for assistance.';
     const botMsgRow = await supabaseService.saveMessage(convId, 'bot', noAnswerMessage);
 
