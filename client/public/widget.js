@@ -343,6 +343,32 @@
           background: #d0d0d0;
         }
 
+        /* ===== CONTACT FORM ===== */
+        .aitel-contact-form {
+          max-height: 400px;
+          overflow-y: auto;
+        }
+
+        .aitel-contact-form h2 {
+          margin: 0 0 8px 0;
+          font-size: 16px;
+          color: #1a3a5c;
+        }
+
+        .aitel-contact-form textarea {
+          resize: vertical;
+          min-height: 80px;
+        }
+
+        .aitel-contact-form button:last-child {
+          background: #e0e0e0;
+          color: #333;
+        }
+
+        .aitel-contact-form button:last-child:hover {
+          background: #d0d0d0;
+        }
+
         /* ===== SCROLLBAR ===== */
         .aitel-widget-messages::-webkit-scrollbar {
           width: 6px;
@@ -522,6 +548,13 @@
             this.conversationId = data.conversationId;
             this.saveSession();
           }
+          
+          // Check if we should show a contact popup
+          if (data.route === 'sales_marketing' && data.showContactCard !== false) {
+            setTimeout(() => this.showContactForm('sales'), 500);
+          } else if (data.route === 'engineers' && data.showContactCard !== false) {
+            setTimeout(() => this.showContactForm('engineers'), 500);
+          }
         } else {
           this.displayMessage('I apologize, but I encountered an issue. Please try again.', 'bot');
         }
@@ -530,6 +563,117 @@
         this.displayMessage('Connection error. Please check your internet and try again.', 'bot');
       } finally {
         this.isLoading = false;
+      }
+    }
+
+    showContactForm(department) {
+      const overlay = document.getElementById('aitelWidgetModalOverlay');
+      const modal = document.getElementById('aitelWidgetModal');
+
+      const forms = {
+        sales: `
+          <h2>Connect with Sales</h2>
+          <p>Tell us about your needs so our sales team can assist you.</p>
+          <form class="aitel-contact-form" data-department="sales">
+            <input type="text" placeholder="Your Name" required />
+            <input type="email" placeholder="Email Address" required />
+            <input type="tel" placeholder="Phone Number" required />
+            <input type="text" placeholder="Company Name" required />
+            <select required>
+              <option value="">-- Select Budget Range --</option>
+              <option value="under-5k">Under $5,000</option>
+              <option value="5k-20k">$5,000 - $20,000</option>
+              <option value="20k-100k">$20,000 - $100,000</option>
+              <option value="above-100k">Above $100,000</option>
+            </select>
+            <textarea placeholder="Tell us about your needs..." required></textarea>
+            <button type="submit">Send to Sales Team</button>
+            <button type="button" class="close-form">Cancel</button>
+          </form>
+        `,
+        engineers: `
+          <h2>Connect with Engineers</h2>
+          <p>Our technical team is ready to discuss your requirements.</p>
+          <form class="aitel-contact-form" data-department="engineers">
+            <input type="text" placeholder="Your Name" required />
+            <input type="email" placeholder="Email Address" required />
+            <input type="tel" placeholder="Phone Number" required />
+            <input type="text" placeholder="Company Name" required />
+            <select required>
+              <option value="">-- Select Product Module --</option>
+              <option value="agents">AI Agents</option>
+              <option value="phone-numbers">Phone Numbers</option>
+              <option value="call-history">Call History</option>
+              <option value="campaigns">Campaigns</option>
+              <option value="api">API Integration</option>
+            </select>
+            <textarea placeholder="Describe your technical requirements..." required></textarea>
+            <button type="submit">Contact Engineering Team</button>
+            <button type="button" class="close-form">Cancel</button>
+          </form>
+        `
+      };
+
+      modal.innerHTML = forms[department] || forms.sales;
+      overlay.style.display = 'flex';
+
+      // Attach form handlers
+      const form = modal.querySelector('form');
+      const closeBtn = modal.querySelector('.close-form');
+
+      form.addEventListener('submit', (e) => this.handleContactForm(e, department));
+      closeBtn.addEventListener('click', () => {
+        overlay.style.display = 'none';
+        modal.innerHTML = '';
+      });
+
+      overlay.addEventListener('click', (e) => {
+        if (e.target === overlay) {
+          overlay.style.display = 'none';
+          modal.innerHTML = '';
+        }
+      });
+    }
+
+    async handleContactForm(e, department) {
+      e.preventDefault();
+      const form = e.target;
+      const inputs = form.querySelectorAll('input, textarea, select');
+      const formData = {
+        department,
+        conversationId: this.conversationId,
+        name: inputs[0].value,
+        email: inputs[1].value,
+        phone: inputs[2].value,
+        companyName: inputs[3].value
+      };
+
+      // Add department-specific fields
+      if (department === 'sales') {
+        formData.budgetRange = inputs[4].value;
+        formData.message = inputs[5].value;
+      } else if (department === 'engineers') {
+        formData.productModule = inputs[4].value;
+        formData.message = inputs[5].value;
+      }
+
+      try {
+        const response = await fetch(`${config.API_URL}/api/contact`, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify(formData)
+        });
+
+        const data = await response.json();
+        if (data.success) {
+          const overlay = document.getElementById('aitelWidgetModalOverlay');
+          overlay.style.display = 'none';
+          overlay.getElementById('aitelWidgetModal').innerHTML = '';
+          this.displayMessage(`Thanks! Our ${department} team will be in touch soon.`, 'bot');
+        }
+      } catch (error) {
+        console.error('Contact form error:', error);
+        this.displayMessage('Error submitting form. Please try again.', 'bot');
       }
     }
   }
