@@ -127,8 +127,8 @@ Return only the normalized question, nothing else:`;
     }
 
     // Step 2: Search KB with both original and normalized questions
-    const KB_THRESHOLD = Number(process.env.KB_THRESHOLD || 0.22);
-    const EFFECTIVE_KB_THRESHOLD = Math.max(KB_THRESHOLD, 0.32);
+    const KB_THRESHOLD = Number(process.env.KB_THRESHOLD || 0.12);
+    const EFFECTIVE_KB_THRESHOLD = Math.max(KB_THRESHOLD, 0.12);
     
     let kbResult = knowledgeBase.getBestAnswer?.(normalizedQuestion);
     

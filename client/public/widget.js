@@ -8,8 +8,8 @@
     return 'https://server-three-black.vercel.app';
   };
 
-  // Aitel Logo (Professional Blue Theme)
-  const AITEL_LOGO = 'data:image/svg+xml,%3Csvg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 500 200"%3E%3Cstyle%3E.logo-text{font-family:Arial,sans-serif;font-size:100px;font-weight:900;fill:%231a3a5c;letter-spacing:-5px}.logo-dot{fill:%231a3a5c}.logo-arc{fill:none;stroke:%231a3a5c;stroke-width:14;stroke-linecap:round}%3C/style%3E%3Cpath class="logo-arc" d="M 40 80 Q 150 20, 260 80"/%3E%3Ccircle class="logo-dot" cx="70" cy="70" r="16"/%3E%3Ccircle class="logo-dot" cx="240" cy="110" r="10"/%3E%3Ctext class="logo-text" x="30" y="150"%3EAitel%3C/text%3E%3C/svg%3E';
+  // Aitel Logo - Clean Professional SVG (no text rendering issues)
+  const AITEL_LOGO = 'data:image/svg+xml,%3Csvg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100"%3E%3Crect width="100" height="100" fill="white" rx="50"/%3E%3Ccircle cx="50" cy="30" r="12" fill="%231a3a5c"/%3E%3Cpath d="M 25 50 L 35 75 M 50 40 L 45 75 M 75 50 L 65 75" stroke="%231a3a5c" stroke-width="5" stroke-linecap="round" fill="none"/%3E%3Ccircle cx="50" cy="85" r="3" fill="%231a3a5c"/%3E%3C/svg%3E';
 
   const CONFIG = {
     default: {

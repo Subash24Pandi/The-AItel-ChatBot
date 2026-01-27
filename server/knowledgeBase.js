@@ -86,9 +86,16 @@ function parseKnowledgeFile(rawText) {
 
 function trainKnowledgeBase() {
   try {
-    const kbPath = path.join(__dirname, '..', 'knowledge', 'english_version.txt');
+    // Try local path first (for Vercel deployment)
+    let kbPath = path.join(__dirname, 'english_version.txt');
+    
+    // Fallback to parent directory if not found
     if (!fs.existsSync(kbPath)) {
-      console.log('⚠️ Knowledge file not found:', kbPath);
+      kbPath = path.join(__dirname, '..', 'knowledge', 'english_version.txt');
+    }
+    
+    if (!fs.existsSync(kbPath)) {
+      console.log('⚠️ Knowledge file not found at:', kbPath);
       KB.length = 0;
       chunks.length = 0;
       return;
@@ -149,11 +156,11 @@ function retrieveScored(query, topK = 5) {
 
   scored.sort((a, b) => b.score - a.score);
 
-  // Stricter baseline to avoid false matches.
-  // For longer questions, require more overlap.
+  // Threshold to avoid false matches
+  // For longer questions, require more overlap
   const qLen = qTokens.length;
-  const MIN_SCORE = 0.24;
-  const MIN_OVERLAP = qLen >= 6 ? 3 : 2;
+  const MIN_SCORE = 0.15;
+  const MIN_OVERLAP = qLen >= 6 ? 2 : 1;
 
   return scored
     .filter(s => s.score >= MIN_SCORE && s.overlapCount >= MIN_OVERLAP)
