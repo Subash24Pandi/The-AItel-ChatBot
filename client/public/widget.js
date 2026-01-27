@@ -12,14 +12,14 @@
     return 'https://server-three-black.vercel.app'; // Production Vercel
   };
 
-  // Aitel Logo - Clean Professional SVG (no text rendering issues)
-  const AITEL_LOGO = 'data:image/svg+xml,%3Csvg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100"%3E%3Crect width="100" height="100" fill="white" rx="50"/%3E%3Ccircle cx="50" cy="30" r="12" fill="%231a3a5c"/%3E%3Cpath d="M 25 50 L 35 75 M 50 40 L 45 75 M 75 50 L 65 75" stroke="%231a3a5c" stroke-width="5" stroke-linecap="round" fill="none"/%3E%3Ccircle cx="50" cy="85" r="3" fill="%231a3a5c"/%3E%3C/svg%3E';
+  // AI Mate Chatbot Icon - Modern AI Assistant SVG
+  const AI_MATE_ICON = 'data:image/svg+xml,%3Csvg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100"%3E%3Cdefs%3E%3ClinearGradient id="iconGrad" x1="0%25" y1="0%25" x2="100%25" y2="100%25"%3E%3Cstop offset="0%25" style="stop-color:%236366f1;stop-opacity:1" /%3E%3Cstop offset="100%25" style="stop-color:%238b5cf6;stop-opacity:1" /%3E%3C/linearGradient%3E%3C/defs%3E%3Crect width="100" height="100" fill="white" rx="50"/%3E%3Ccircle cx="50" cy="50" r="48" fill="url(%23iconGrad)" opacity="0.1"/%3E%3Crect x="25" y="30" width="50" height="45" rx="6" fill="none" stroke="%236366f1" stroke-width="2.5"/%3E%3Ccircle cx="35" cy="40" r="3" fill="%236366f1"/%3E%3Ccircle cx="65" cy="40" r="3" fill="%236366f1"/%3E%3Cpath d="M 35 55 Q 50 62 65 55" stroke="%236366f1" stroke-width="2.5" fill="none" stroke-linecap="round"/%3E%3Cpath d="M 28 52 L 30 58 M 72 52 L 70 58" stroke="%238b5cf6" stroke-width="2" stroke-linecap="round"/%3E%3C/svg%3E';
 
   const CONFIG = {
     default: {
       API_URL: getAPIURL(),
-      NAME: 'Aitel Assistant',
-      LOGO: AITEL_LOGO
+      NAME: 'AI Mate',
+      ICON: AI_MATE_ICON
     }
   };
 
@@ -57,31 +57,31 @@
           position: fixed;
           bottom: 20px;
           right: 20px;
-          width: 56px;
-          height: 56px;
+          width: 64px;
+          height: 64px;
           border-radius: 50%;
-          background: white;
-          border: 2px solid #1a3a5c;
+          background: linear-gradient(135deg, #6366f1 0%, #8b5cf6 100%);
+          border: none;
           cursor: pointer;
-          box-shadow: 0 2px 8px rgba(26, 58, 92, 0.15);
+          box-shadow: 0 4px 20px rgba(99, 102, 241, 0.4);
           display: flex;
           align-items: center;
           justify-content: center;
           z-index: 9998;
-          transition: all 0.3s ease;
+          transition: all 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
           padding: 0;
           overflow: hidden;
         }
 
         .aitel-widget-btn img {
-          width: 85%;
-          height: 85%;
+          width: 80%;
+          height: 80%;
           object-fit: contain;
         }
 
         .aitel-widget-btn:hover {
-          transform: scale(1.05);
-          box-shadow: 0 4px 12px rgba(26, 58, 92, 0.2);
+          transform: scale(1.1);
+          box-shadow: 0 6px 30px rgba(99, 102, 241, 0.5);
         }
 
         .aitel-widget-btn.active {
@@ -94,18 +94,18 @@
           position: fixed;
           bottom: 20px;
           right: 20px;
-          width: 380px;
-          height: 520px;
+          width: 420px;
+          height: 580px;
           background: #ffffff;
-          border-radius: 12px;
-          box-shadow: 0 5px 30px rgba(0, 0, 0, 0.12);
+          border-radius: 16px;
+          box-shadow: 0 10px 40px rgba(0, 0, 0, 0.15);
           display: none;
           flex-direction: column;
           z-index: 9999;
           opacity: 0;
           transform: scale(0.9) translateY(20px);
           transition: all 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
-          border: 1px solid #e0e0e0;
+          border: none;
         }
 
         .aitel-widget-panel.open {
@@ -116,63 +116,119 @@
 
         /* ===== HEADER ===== */
         .aitel-widget-header {
-          background: linear-gradient(135deg, #1a3a5c 0%, #2d5a8a 100%);
+          background: linear-gradient(135deg, #6366f1 0%, #8b5cf6 100%);
           color: white;
-          padding: 16px;
-          border-radius: 12px 12px 0 0;
+          padding: 20px;
+          border-radius: 16px 16px 0 0;
           display: flex;
-          justify-content: space-between;
+          flex-direction: column;
           align-items: center;
+          justify-content: center;
+          gap: 12px;
           flex-shrink: 0;
-          border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+          border-bottom: none;
+          position: relative;
+        }
+
+        .aitel-widget-header::after {
+          content: '';
+          position: absolute;
+          top: 0;
+          left: 0;
+          right: 0;
+          bottom: 0;
+          background: radial-gradient(circle at top right, rgba(255, 255, 255, 0.1), transparent);
+          border-radius: 16px 16px 0 0;
+          pointer-events: none;
+        }
+
+        .aitel-widget-header-icon {
+          width: 48px;
+          height: 48px;
+          background: rgba(255, 255, 255, 0.2);
+          border-radius: 12px;
+          display: flex;
+          align-items: center;
+          justify-content: center;
+          backdrop-filter: blur(10px);
+        }
+
+        .aitel-widget-header-icon img {
+          width: 32px;
+          height: 32px;
+          object-fit: contain;
+        }
+
+        .aitel-widget-header-content {
+          display: flex;
+          flex-direction: column;
+          align-items: center;
+          gap: 4px;
+          z-index: 1;
         }
 
         .aitel-widget-header h3 {
           margin: 0;
-          font-size: 16px;
-          font-weight: 600;
+          font-size: 20px;
+          font-weight: 700;
+          letter-spacing: -0.5px;
+          text-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+        }
+
+        .aitel-widget-header-subtitle {
+          margin: 0;
+          font-size: 12px;
+          font-weight: 500;
+          opacity: 0.9;
           letter-spacing: 0.5px;
         }
 
         .aitel-widget-close {
-          background: none;
+          position: absolute;
+          top: 12px;
+          right: 12px;
+          background: rgba(255, 255, 255, 0.2);
           border: none;
           color: white;
           cursor: pointer;
-          font-size: 20px;
-          padding: 0;
-          width: 28px;
-          height: 28px;
+          font-size: 24px;
+          padding: 4px 8px;
+          width: 32px;
+          height: 32px;
           display: flex;
           align-items: center;
           justify-content: center;
-          border-radius: 4px;
-          transition: background 0.2s;
+          border-radius: 8px;
+          transition: all 0.2s;
+          backdrop-filter: blur(10px);
+          z-index: 2;
         }
 
         .aitel-widget-close:hover {
-          background: rgba(255, 255, 255, 0.1);
+          background: rgba(255, 255, 255, 0.3);
+          transform: scale(1.1);
         }
 
         /* ===== MESSAGES ===== */
         .aitel-widget-messages {
           flex: 1;
           overflow-y: auto;
-          padding: 14px 12px;
-          background: #f8f9fa;
+          padding: 16px;
+          background: linear-gradient(180deg, #f9fafb 0%, #f5f5f5 100%);
           display: flex;
           flex-direction: column;
-          gap: 10px;
+          gap: 12px;
         }
 
         .aitel-widget-message-bubble {
-          padding: 10px 12px;
-          border-radius: 8px;
+          padding: 12px 14px;
+          border-radius: 12px;
           font-size: 13px;
           line-height: 1.5;
           word-wrap: break-word;
           max-width: 85%;
           animation: slideIn 0.3s ease;
+          font-weight: 500;
         }
 
         @keyframes slideIn {
@@ -188,77 +244,89 @@
 
         .aitel-widget-bot-message {
           background: white;
-          color: #333;
-          border: 1px solid #e0e0e0;
+          color: #1a1a1a;
+          border: 1px solid #e5e5e5;
           align-self: flex-start;
           margin-left: 0;
+          box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05);
         }
 
         .aitel-widget-user-message {
-          background: #1a3a5c;
+          background: linear-gradient(135deg, #6366f1 0%, #8b5cf6 100%);
           color: white;
           align-self: flex-end;
           margin-right: 0;
+          box-shadow: 0 2px 8px rgba(99, 102, 241, 0.3);
         }
 
         /* ===== INPUT AREA ===== */
         .aitel-widget-input-box {
           display: flex;
-          gap: 8px;
-          padding: 12px;
-          border-top: 1px solid #e0e0e0;
+          gap: 10px;
+          padding: 14px;
+          border-top: 1px solid #e5e5e5;
           background: white;
           flex-shrink: 0;
-          border-radius: 0 0 12px 12px;
+          border-radius: 0 0 16px 16px;
         }
 
         .aitel-widget-input {
           flex: 1;
-          padding: 10px 12px;
-          border: 1px solid #ddd;
-          border-radius: 6px;
+          padding: 11px 14px;
+          border: 1.5px solid #e5e5e5;
+          border-radius: 10px;
           font-size: 13px;
           font-family: inherit;
           resize: none;
           max-height: 60px;
-          transition: border-color 0.2s;
+          transition: all 0.2s;
+          background: #fafafa;
+        }
+
+        .aitel-widget-input::placeholder {
+          color: #999;
         }
 
         .aitel-widget-input:focus {
           outline: none;
-          border-color: #1a3a5c;
-          background: #f9fafb;
+          border-color: #6366f1;
+          background: white;
+          box-shadow: 0 0 0 3px rgba(99, 102, 241, 0.1);
         }
 
         .aitel-widget-send-btn {
-          padding: 10px 14px;
-          background: #1a3a5c;
+          padding: 11px 16px;
+          background: linear-gradient(135deg, #6366f1 0%, #8b5cf6 100%);
           color: white;
           border: none;
-          border-radius: 6px;
+          border-radius: 10px;
           cursor: pointer;
           font-size: 16px;
-          transition: background 0.2s;
+          transition: all 0.2s;
           flex-shrink: 0;
           display: flex;
           align-items: center;
           justify-content: center;
-          min-width: 40px;
-          height: 40px;
+          min-width: 44px;
+          height: 44px;
+          font-weight: 600;
+          box-shadow: 0 2px 8px rgba(99, 102, 241, 0.3);
         }
 
         .aitel-widget-send-btn:hover {
-          background: #2d5a8a;
+          transform: translateY(-2px);
+          box-shadow: 0 4px 12px rgba(99, 102, 241, 0.4);
         }
 
         .aitel-widget-send-btn:active {
-          transform: scale(0.95);
+          transform: translateY(0);
         }
 
         .aitel-widget-send-btn:disabled {
           background: #ccc;
           cursor: not-allowed;
           transform: none;
+          box-shadow: none;
         }
 
         /* ===== MODAL ===== */
@@ -273,78 +341,98 @@
           z-index: 10000;
           align-items: center;
           justify-content: center;
+          backdrop-filter: blur(4px);
         }
 
         .aitel-widget-modal {
           background: white;
-          border-radius: 8px;
-          padding: 24px;
-          max-width: 400px;
+          border-radius: 12px;
+          padding: 28px;
+          max-width: 420px;
           width: 90%;
-          box-shadow: 0 10px 40px rgba(0, 0, 0, 0.2);
+          box-shadow: 0 20px 60px rgba(0, 0, 0, 0.25);
+          animation: modalSlideIn 0.3s ease;
+        }
+
+        @keyframes modalSlideIn {
+          from {
+            opacity: 0;
+            transform: scale(0.95) translateY(-20px);
+          }
+          to {
+            opacity: 1;
+            transform: scale(1) translateY(0);
+          }
         }
 
         .aitel-widget-modal h3 {
-          margin: 0 0 12px 0;
-          font-size: 18px;
-          color: #1a3a5c;
+          margin: 0 0 8px 0;
+          font-size: 20px;
+          color: #6366f1;
+          font-weight: 700;
         }
 
         .aitel-widget-modal p {
-          margin: 0 0 16px 0;
+          margin: 0 0 18px 0;
           font-size: 13px;
           color: #666;
-          line-height: 1.5;
+          line-height: 1.6;
         }
 
         .aitel-widget-modal form {
           display: flex;
           flex-direction: column;
-          gap: 12px;
+          gap: 14px;
         }
 
         .aitel-widget-modal input,
         .aitel-widget-modal textarea,
         .aitel-widget-modal select {
-          padding: 10px;
-          border: 1px solid #ddd;
-          border-radius: 6px;
+          padding: 11px 14px;
+          border: 1.5px solid #e5e5e5;
+          border-radius: 10px;
           font-size: 13px;
           font-family: inherit;
-          transition: border-color 0.2s;
+          transition: all 0.2s;
+          background: #fafafa;
         }
 
         .aitel-widget-modal input:focus,
         .aitel-widget-modal textarea:focus,
         .aitel-widget-modal select:focus {
           outline: none;
-          border-color: #1a3a5c;
-          background: #f9fafb;
+          border-color: #6366f1;
+          background: white;
+          box-shadow: 0 0 0 3px rgba(99, 102, 241, 0.1);
         }
 
         .aitel-widget-modal button {
-          padding: 10px;
-          background: #1a3a5c;
+          padding: 11px;
+          background: linear-gradient(135deg, #6366f1 0%, #8b5cf6 100%);
           color: white;
           border: none;
-          border-radius: 6px;
+          border-radius: 10px;
           cursor: pointer;
           font-size: 13px;
-          font-weight: 500;
-          transition: background 0.2s;
+          font-weight: 600;
+          transition: all 0.2s;
+          box-shadow: 0 2px 8px rgba(99, 102, 241, 0.3);
         }
 
         .aitel-widget-modal button:hover {
-          background: #2d5a8a;
+          transform: translateY(-2px);
+          box-shadow: 0 4px 12px rgba(99, 102, 241, 0.4);
         }
 
         .aitel-widget-modal button:last-child {
-          background: #e0e0e0;
+          background: #e5e5e5;
           color: #333;
+          box-shadow: none;
         }
 
         .aitel-widget-modal button:last-child:hover {
-          background: #d0d0d0;
+          background: #d5d5d5;
+          transform: translateY(-2px);
         }
 
         /* ===== CONTACT FORM ===== */
@@ -379,17 +467,17 @@
         }
 
         .aitel-widget-messages::-webkit-scrollbar-track {
-          background: #f0f0f0;
+          background: #f5f5f5;
           border-radius: 10px;
         }
 
         .aitel-widget-messages::-webkit-scrollbar-thumb {
-          background: #1a3a5c;
+          background: linear-gradient(180deg, #6366f1 0%, #8b5cf6 100%);
           border-radius: 10px;
         }
 
         .aitel-widget-messages::-webkit-scrollbar-thumb:hover {
-          background: #2d5a8a;
+          background: linear-gradient(180deg, #4f46e5 0%, #7c3aed 100%);
         }
 
         /* ===== RESPONSIVE ===== */
@@ -414,14 +502,20 @@
       document.head.appendChild(style);
 
       const html = `
-        <button class="aitel-widget-btn" id="aitelWidgetBtn" title="Chat with Aitel">
-          <img src="${config.LOGO}" alt="Aitel" />
+        <button class="aitel-widget-btn" id="aitelWidgetBtn" title="Chat with AI Mate">
+          <img src="${config.ICON}" alt="AI Mate" />
         </button>
 
         <div class="aitel-widget-panel" id="aitelWidgetPanel">
           <div class="aitel-widget-header">
-            <h3>${config.NAME}</h3>
             <button class="aitel-widget-close" id="aitelWidgetCloseBtn">✕</button>
+            <div class="aitel-widget-header-icon">
+              <img src="${config.ICON}" alt="AI Mate" />
+            </div>
+            <div class="aitel-widget-header-content">
+              <h3>${config.NAME}</h3>
+              <p class="aitel-widget-header-subtitle">Chat with our AI Mate</p>
+            </div>
           </div>
 
           <div class="aitel-widget-messages" id="aitelWidgetMessages"></div>
@@ -489,7 +583,7 @@
     showWelcome() {
       const messages = document.getElementById('aitelWidgetMessages');
       if (messages.children.length === 0) {
-        this.displayMessage("Hello! I'm Aitel's AI assistant. How can I help you today?", 'bot');
+        this.displayMessage("Hello! I'm AI Mate. How can I assist you today?", 'bot');
       }
     }
 
