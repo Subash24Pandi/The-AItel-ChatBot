@@ -12,14 +12,14 @@
     return 'https://server-three-black.vercel.app'; // Production Vercel
   };
 
-  // AI Mate Chatbot Icon - Modern AI Assistant SVG
-  const AI_MATE_ICON = 'data:image/svg+xml,%3Csvg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100"%3E%3Cdefs%3E%3ClinearGradient id="iconGrad" x1="0%25" y1="0%25" x2="100%25" y2="100%25"%3E%3Cstop offset="0%25" style="stop-color:%236366f1;stop-opacity:1" /%3E%3Cstop offset="100%25" style="stop-color:%238b5cf6;stop-opacity:1" /%3E%3C/linearGradient%3E%3C/defs%3E%3Crect width="100" height="100" fill="white" rx="50"/%3E%3Ccircle cx="50" cy="50" r="48" fill="url(%23iconGrad)" opacity="0.1"/%3E%3Crect x="25" y="30" width="50" height="45" rx="6" fill="none" stroke="%236366f1" stroke-width="2.5"/%3E%3Ccircle cx="35" cy="40" r="3" fill="%236366f1"/%3E%3Ccircle cx="65" cy="40" r="3" fill="%236366f1"/%3E%3Cpath d="M 35 55 Q 50 62 65 55" stroke="%236366f1" stroke-width="2.5" fill="none" stroke-linecap="round"/%3E%3Cpath d="M 28 52 L 30 58 M 72 52 L 70 58" stroke="%238b5cf6" stroke-width="2" stroke-linecap="round"/%3E%3C/svg%3E';
+  // Anu Chatbot Icon - Stylish AI Assistant SVG
+  const ANU_ICON = 'data:image/svg+xml,%3Csvg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100"%3E%3Cdefs%3E%3ClinearGradient id="anuGrad" x1="0%25" y1="0%25" x2="100%25" y2="100%25"%3E%3Cstop offset="0%25" style="stop-color:%236366f1;stop-opacity:1" /%3E%3Cstop offset="100%25" style="stop-color:%238b5cf6;stop-opacity:1" /%3E%3C/linearGradient%3E%3C/defs%3E%3Ccircle cx="50" cy="50" r="50" fill="url(%23anuGrad)"/%3E%3Crect x="30" y="28" width="40" height="36" rx="8" fill="white" opacity="0.95"/%3E%3Ccircle cx="39" cy="38" r="2.5" fill="%236366f1"/%3E%3Ccircle cx="61" cy="38" r="2.5" fill="%236366f1"/%3E%3Cpath d="M 39 52 Q 50 58 61 52" stroke="%236366f1" stroke-width="2" fill="none" stroke-linecap="round"/%3E%3Cpath d="M 35 32 L 40 28 M 65 32 L 60 28" stroke="white" stroke-width="1.5" fill="none" stroke-linecap="round" opacity="0.7"/%3E%3C/svg%3E';
 
   const CONFIG = {
     default: {
       API_URL: getAPIURL(),
-      NAME: 'AI Mate',
-      ICON: AI_MATE_ICON
+      NAME: 'Anu',
+      ICON: ANU_ICON
     }
   };
 
@@ -57,13 +57,13 @@
           position: fixed;
           bottom: 20px;
           right: 20px;
-          width: 64px;
-          height: 64px;
+          width: 68px;
+          height: 68px;
           border-radius: 50%;
           background: linear-gradient(135deg, #6366f1 0%, #8b5cf6 100%);
           border: none;
           cursor: pointer;
-          box-shadow: 0 4px 20px rgba(99, 102, 241, 0.4);
+          box-shadow: 0 6px 28px rgba(99, 102, 241, 0.45);
           display: flex;
           align-items: center;
           justify-content: center;
@@ -71,17 +71,31 @@
           transition: all 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
           padding: 0;
           overflow: hidden;
+          position: relative;
+        }
+
+        .aitel-widget-btn::before {
+          content: '';
+          position: absolute;
+          top: 0;
+          left: 0;
+          right: 0;
+          bottom: 0;
+          background: radial-gradient(circle at 30% 30%, rgba(255, 255, 255, 0.2), transparent);
+          border-radius: 50%;
         }
 
         .aitel-widget-btn img {
-          width: 80%;
-          height: 80%;
+          width: 76%;
+          height: 76%;
           object-fit: contain;
+          z-index: 1;
+          filter: drop-shadow(0 2px 4px rgba(0, 0, 0, 0.1));
         }
 
         .aitel-widget-btn:hover {
-          transform: scale(1.1);
-          box-shadow: 0 6px 30px rgba(99, 102, 241, 0.5);
+          transform: scale(1.12);
+          box-shadow: 0 8px 35px rgba(99, 102, 241, 0.55);
         }
 
         .aitel-widget-btn.active {
@@ -97,8 +111,8 @@
           width: 420px;
           height: 580px;
           background: #ffffff;
-          border-radius: 16px;
-          box-shadow: 0 10px 40px rgba(0, 0, 0, 0.15);
+          border-radius: 18px;
+          box-shadow: 0 12px 48px rgba(0, 0, 0, 0.18);
           display: none;
           flex-direction: column;
           z-index: 9999;
@@ -143,41 +157,43 @@
         }
 
         .aitel-widget-header-icon {
-          width: 48px;
-          height: 48px;
-          background: rgba(255, 255, 255, 0.2);
-          border-radius: 12px;
+          width: 56px;
+          height: 56px;
+          background: rgba(255, 255, 255, 0.25);
+          border-radius: 14px;
           display: flex;
           align-items: center;
           justify-content: center;
-          backdrop-filter: blur(10px);
+          backdrop-filter: blur(12px);
+          box-shadow: 0 4px 15px rgba(0, 0, 0, 0.15);
         }
 
         .aitel-widget-header-icon img {
-          width: 32px;
-          height: 32px;
+          width: 38px;
+          height: 38px;
           object-fit: contain;
+          filter: drop-shadow(0 2px 4px rgba(0, 0, 0, 0.1));
         }
 
         .aitel-widget-header-content {
           display: flex;
           flex-direction: column;
           align-items: center;
-          gap: 4px;
+          gap: 6px;
           z-index: 1;
         }
 
         .aitel-widget-header h3 {
           margin: 0;
-          font-size: 20px;
-          font-weight: 700;
-          letter-spacing: -0.5px;
-          text-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+          font-size: 22px;
+          font-weight: 800;
+          letter-spacing: -0.3px;
+          text-shadow: 0 2px 6px rgba(0, 0, 0, 0.12);
         }
 
         .aitel-widget-header-subtitle {
           margin: 0;
-          font-size: 12px;
+          font-size: 13px;
           font-weight: 500;
           opacity: 0.9;
           letter-spacing: 0.5px;
@@ -213,18 +229,18 @@
         .aitel-widget-messages {
           flex: 1;
           overflow-y: auto;
-          padding: 16px;
-          background: linear-gradient(180deg, #f9fafb 0%, #f5f5f5 100%);
+          padding: 18px;
+          background: linear-gradient(180deg, #fafbfc 0%, #f5f7fa 100%);
           display: flex;
           flex-direction: column;
           gap: 12px;
         }
 
         .aitel-widget-message-bubble {
-          padding: 12px 14px;
-          border-radius: 12px;
+          padding: 12px 15px;
+          border-radius: 14px;
           font-size: 13px;
-          line-height: 1.5;
+          line-height: 1.6;
           word-wrap: break-word;
           max-width: 85%;
           animation: slideIn 0.3s ease;
@@ -234,7 +250,7 @@
         @keyframes slideIn {
           from {
             opacity: 0;
-            transform: translateY(10px);
+            transform: translateY(12px);
           }
           to {
             opacity: 1;
@@ -244,11 +260,11 @@
 
         .aitel-widget-bot-message {
           background: white;
-          color: #1a1a1a;
-          border: 1px solid #e5e5e5;
+          color: #1f2937;
+          border: 1px solid #e5e7eb;
           align-self: flex-start;
           margin-left: 0;
-          box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05);
+          box-shadow: 0 2px 6px rgba(0, 0, 0, 0.06);
         }
 
         .aitel-widget-user-message {
@@ -256,50 +272,50 @@
           color: white;
           align-self: flex-end;
           margin-right: 0;
-          box-shadow: 0 2px 8px rgba(99, 102, 241, 0.3);
+          box-shadow: 0 3px 10px rgba(99, 102, 241, 0.35);
         }
 
         /* ===== INPUT AREA ===== */
         .aitel-widget-input-box {
           display: flex;
-          gap: 10px;
-          padding: 14px;
-          border-top: 1px solid #e5e5e5;
-          background: white;
+          gap: 12px;
+          padding: 16px;
+          border-top: 1px solid #f0f0f0;
+          background: linear-gradient(180deg, #ffffff 0%, #fafbfc 100%);
           flex-shrink: 0;
           border-radius: 0 0 16px 16px;
         }
 
         .aitel-widget-input {
           flex: 1;
-          padding: 11px 14px;
-          border: 1.5px solid #e5e5e5;
-          border-radius: 10px;
+          padding: 12px 16px;
+          border: 1.5px solid #e5e7eb;
+          border-radius: 11px;
           font-size: 13px;
           font-family: inherit;
           resize: none;
           max-height: 60px;
           transition: all 0.2s;
-          background: #fafafa;
+          background: white;
         }
 
         .aitel-widget-input::placeholder {
-          color: #999;
+          color: #a1a5b0;
         }
 
         .aitel-widget-input:focus {
           outline: none;
           border-color: #6366f1;
           background: white;
-          box-shadow: 0 0 0 3px rgba(99, 102, 241, 0.1);
+          box-shadow: 0 0 0 3.5px rgba(99, 102, 241, 0.12);
         }
 
         .aitel-widget-send-btn {
-          padding: 11px 16px;
+          padding: 12px 18px;
           background: linear-gradient(135deg, #6366f1 0%, #8b5cf6 100%);
           color: white;
           border: none;
-          border-radius: 10px;
+          border-radius: 11px;
           cursor: pointer;
           font-size: 16px;
           transition: all 0.2s;
@@ -307,23 +323,23 @@
           display: flex;
           align-items: center;
           justify-content: center;
-          min-width: 44px;
-          height: 44px;
-          font-weight: 600;
-          box-shadow: 0 2px 8px rgba(99, 102, 241, 0.3);
+          min-width: 48px;
+          height: 48px;
+          font-weight: 700;
+          box-shadow: 0 3px 12px rgba(99, 102, 241, 0.35);
         }
 
         .aitel-widget-send-btn:hover {
-          transform: translateY(-2px);
-          box-shadow: 0 4px 12px rgba(99, 102, 241, 0.4);
+          transform: translateY(-3px);
+          box-shadow: 0 5px 18px rgba(99, 102, 241, 0.45);
         }
 
         .aitel-widget-send-btn:active {
-          transform: translateY(0);
+          transform: translateY(-1px);
         }
 
         .aitel-widget-send-btn:disabled {
-          background: #ccc;
+          background: #d1d5db;
           cursor: not-allowed;
           transform: none;
           box-shadow: none;
@@ -510,11 +526,11 @@
           <div class="aitel-widget-header">
             <button class="aitel-widget-close" id="aitelWidgetCloseBtn">✕</button>
             <div class="aitel-widget-header-icon">
-              <img src="${config.ICON}" alt="AI Mate" />
+              <img src="${config.ICON}" alt="Anu" />
             </div>
             <div class="aitel-widget-header-content">
               <h3>${config.NAME}</h3>
-              <p class="aitel-widget-header-subtitle">Chat with our AI Mate</p>
+              <p class="aitel-widget-header-subtitle">Your AI Assistant</p>
             </div>
           </div>
 
@@ -583,7 +599,7 @@
     showWelcome() {
       const messages = document.getElementById('aitelWidgetMessages');
       if (messages.children.length === 0) {
-        this.displayMessage("Hello! I'm AI Mate. How can I assist you today?", 'bot');
+        this.displayMessage("Hi! I'm Anu, your AI assistant. How can I help you today?", 'bot');
       }
     }
 
