@@ -727,7 +727,25 @@
       const bubble = document.createElement('div');
       bubble.className = `aitel-widget-message-bubble aitel-widget-${sender}-message`;
       bubble.textContent = text;
+      bubble.id = `msg-${Date.now()}`;
       messagesContainer.appendChild(bubble);
+      messagesContainer.scrollTop = messagesContainer.scrollHeight;
+      return bubble;
+    }
+
+    streamMessage(sender) {
+      const messagesContainer = document.getElementById('aitelWidgetMessages');
+      const bubble = document.createElement('div');
+      bubble.className = `aitel-widget-message-bubble aitel-widget-${sender}-message`;
+      bubble.id = `stream-msg-${Date.now()}`;
+      bubble.textContent = '';
+      messagesContainer.appendChild(bubble);
+      return bubble;
+    }
+
+    appendToStream(bubble, text) {
+      bubble.textContent += text;
+      const messagesContainer = document.getElementById('aitelWidgetMessages');
       messagesContainer.scrollTop = messagesContainer.scrollHeight;
     }
 
@@ -784,32 +802,42 @@
         this.removeTypingIndicator();
 
         if (data.answer) {
-          this.displayMessage(data.answer, 'bot');
+          // Stream the response character by character
+          const streamBubble = this.streamMessage('bot');
+          const answer = data.answer;
+          const delayPerChar = 10; // milliseconds per character
+          
+          for (let i = 0; i < answer.length; i++) {
+            await new Promise(resolve => {
+              setTimeout(() => {
+                this.appendToStream(streamBubble, answer.charAt(i));
+                resolve();
+              }, delayPerChar);
+            });
+          }
+          
           if (data.conversationId && !this.conversationId) {
             this.conversationId = data.conversationId;
             this.saveSession();
           }
           
-          // Trigger contact forms based on KB and content
+          // Trigger contact forms based on KB and content - STRICT MODE
           const messageText = message.toLowerCase();
           const answerText = data.answer.toLowerCase();
           
-          // Only trigger for meaningful keywords (exclude simple greetings)
-          const isGreeting = ['hi', 'hello', 'hey', 'ok', 'okay', 'thanks', 'thank you'].includes(messageText);
+          // Only trigger for meaningful keywords (exclude simple greetings and KB responses)
+          const isGreeting = ['hi', 'hello', 'hey', 'ok', 'okay', 'thanks', 'thank you', 'yes', 'no'].includes(messageText);
+          const hasKBInfo = data.confidence > 0.5 && data.route !== 'llm_fallback';
           
-          // Sales contact: packages, amounts, discounts, pricing, costs
-          if (!isGreeting && (messageText.includes('package') || messageText.includes('amount') || 
+          // ONLY show Sales popup if: user asked about pricing AND answer came from KB
+          if (!isGreeting && !hasKBInfo && (messageText.includes('package') || messageText.includes('amount') || 
               messageText.includes('discount') || messageText.includes('price') || 
               messageText.includes('cost') || messageText.includes('pricing') ||
               messageText.includes('budget') || messageText.includes('plan'))) {
             setTimeout(() => this.showContactForm('sales'), 800);
           } 
-          // Engineer contact: Question outside knowledge base (but not greetings)
-          else if (!isGreeting && (data.route === 'llm_fallback' || data.confidence < 0.4 || 
-                   answerText.includes('don\'t have information') || 
-                   answerText.includes('not available') ||
-                   answerText.includes('outside') ||
-                   data.usedLLMFallback === true)) {
+          // ONLY show Engineer popup if: answer is clearly from LLM (outside KB) AND not a greeting
+          else if (!isGreeting && data.route === 'llm_fallback' && data.confidence < 0.3) {
             setTimeout(() => this.showContactForm('engineers'), 800);
           }
         } else {
