@@ -374,17 +374,21 @@
 
         /* ===== MODAL ===== */
         .aitel-widget-modal-overlay {
-          display: none;
+          display: none !important;
           position: fixed;
           top: 0;
           left: 0;
           right: 0;
           bottom: 0;
-          background: rgba(0, 0, 0, 0.5);
+          background: rgba(0, 0, 0, 0.6);
           z-index: 10000;
           align-items: center;
           justify-content: center;
           backdrop-filter: blur(4px);
+        }
+
+        .aitel-widget-modal-overlay[style*="display: flex"] {
+          display: flex !important;
         }
 
         .aitel-widget-modal {
@@ -393,8 +397,10 @@
           padding: 28px;
           max-width: 420px;
           width: 90%;
-          box-shadow: 0 20px 60px rgba(0, 0, 0, 0.25);
+          box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
           animation: modalSlideIn 0.3s ease;
+          max-height: 90vh;
+          overflow-y: auto;
         }
 
         @keyframes modalSlideIn {
@@ -408,8 +414,8 @@
           }
         }
 
-        .aitel-widget-modal h3 {
-          margin: 0 0 8px 0;
+        .aitel-widget-modal h2 {
+          margin: 0 0 12px 0;
           font-size: 20px;
           color: #6366f1;
           font-weight: 700;
@@ -478,7 +484,6 @@
           transform: translateY(-2px);
         }
 
-        /* ===== CONTACT FORM ===== */
         .aitel-contact-form {
           max-height: 400px;
           overflow-y: auto;
@@ -486,8 +491,8 @@
 
         .aitel-contact-form h2 {
           margin: 0 0 8px 0;
-          font-size: 16px;
-          color: #1a3a5c;
+          font-size: 18px;
+          color: #6366f1;
         }
 
         .aitel-contact-form textarea {
@@ -495,13 +500,44 @@
           min-height: 80px;
         }
 
-        .aitel-contact-form button:last-child {
-          background: #e0e0e0;
-          color: #333;
+        .aitel-contact-form button {
+          width: 100%;
+          margin-top: 8px;
         }
 
-        .aitel-contact-form button:last-child:hover {
-          background: #d0d0d0;
+        .aitel-contact-form button[type="submit"] {
+          background: linear-gradient(135deg, #6366f1 0%, #8b5cf6 100%);
+          color: white;
+          border: none;
+          border-radius: 10px;
+          cursor: pointer;
+          font-size: 13px;
+          font-weight: 600;
+          transition: all 0.2s;
+          padding: 11px;
+          box-shadow: 0 2px 8px rgba(99, 102, 241, 0.3);
+        }
+
+        .aitel-contact-form button[type="submit"]:hover {
+          transform: translateY(-2px);
+          box-shadow: 0 4px 12px rgba(99, 102, 241, 0.4);
+        }
+
+        .aitel-contact-form .close-form {
+          background: #e5e5e5;
+          color: #333;
+          border: none;
+          border-radius: 10px;
+          cursor: pointer;
+          font-size: 13px;
+          font-weight: 600;
+          transition: all 0.2s;
+          padding: 11px;
+        }
+
+        .aitel-contact-form .close-form:hover {
+          background: #d5d5d5;
+          transform: translateY(-2px);
         }
 
         /* ===== SCROLLBAR ===== */
@@ -688,10 +724,13 @@
           }
           
           // Check if we should show a contact popup
-          if (data.route === 'sales_marketing' && data.showContactCard !== false) {
-            setTimeout(() => this.showContactForm('sales'), 500);
-          } else if (data.route === 'engineers' && data.showContactCard !== false) {
-            setTimeout(() => this.showContactForm('engineers'), 500);
+          const messageText = data.answer.toLowerCase();
+          const route = data.route || '';
+          
+          if ((route === 'sales_marketing' || messageText.includes('sales') || messageText.includes('pricing') || messageText.includes('budget')) && data.showContactCard !== false) {
+            setTimeout(() => this.showContactForm('sales'), 800);
+          } else if ((route === 'engineers' || messageText.includes('engineer') || messageText.includes('developer') || messageText.includes('api') || messageText.includes('technical')) && data.showContactCard !== false) {
+            setTimeout(() => this.showContactForm('engineers'), 800);
           }
         } else {
           this.displayMessage('I apologize, but I encountered an issue. Please try again.', 'bot');
@@ -805,8 +844,9 @@
         const data = await response.json();
         if (data.success) {
           const overlay = document.getElementById('aitelWidgetModalOverlay');
+          const modal = document.getElementById('aitelWidgetModal');
           overlay.style.display = 'none';
-          overlay.getElementById('aitelWidgetModal').innerHTML = '';
+          modal.innerHTML = '';
           this.displayMessage(`Thanks! Our ${department} team will be in touch soon.`, 'bot');
         }
       } catch (error) {
