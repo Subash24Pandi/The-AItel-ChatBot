@@ -745,7 +745,7 @@
           // Stream the response character by character
           const streamBubble = this.streamMessage('bot');
           const answer = data.answer;
-          const delayPerChar = 30; // milliseconds per character (increased for slightly slower streaming)
+          const delayPerChar = 5; // milliseconds per character (fast streaming)
           
           for (let i = 0; i < answer.length; i++) {
             await new Promise(resolve => {
