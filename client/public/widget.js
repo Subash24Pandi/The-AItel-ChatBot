@@ -381,7 +381,7 @@
 
         /* ===== MODAL ===== */
         .aitel-widget-modal-overlay {
-          display: none !important;
+          display: none;
           position: fixed;
           top: 0;
           left: 0;
@@ -395,7 +395,7 @@
         }
 
         .aitel-widget-modal-overlay[style*="display: flex"] {
-          display: flex !important;
+          display: flex;
         }
 
         .aitel-widget-modal {
@@ -745,7 +745,7 @@
           // Stream the response character by character
           const streamBubble = this.streamMessage('bot');
           const answer = data.answer;
-          const delayPerChar = 10; // milliseconds per character
+          const delayPerChar = 30; // milliseconds per character (increased for slightly slower streaming)
           
           for (let i = 0; i < answer.length; i++) {
             await new Promise(resolve => {
