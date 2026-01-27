@@ -11,14 +11,18 @@ const app = express();
 const PORT = process.env.PORT || 3000;
 
 // Train KB at startup
-console.log('🚀 Starting server initialization...');
+console.log('🚀 Server v2.3 - Starting initialization...');
 try {
   if (typeof knowledgeBase.trainKnowledgeBase === 'function') {
     knowledgeBase.trainKnowledgeBase();
     const kbCount = knowledgeBase.getKbCount?.() ?? 0;
     console.log(`📚 KB Loaded at startup: ${kbCount} Q&A pairs`);
     if (kbCount === 0) {
-      console.warn('⚠️ WARNING: KB loaded with 0 entries!');
+      console.warn('⚠️ WARNING: KB loaded with 0 entries! Attempting fallback...');
+      // Force a retry with embedded data
+      knowledgeBase.trainKnowledgeBase();
+      const retryCount = knowledgeBase.getKbCount?.() ?? 0;
+      console.log(`📚 Retry result: ${retryCount} Q&A pairs`);
     }
   }
 } catch (e) {
