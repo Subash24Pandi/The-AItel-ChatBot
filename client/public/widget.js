@@ -3,17 +3,19 @@
   const params = new URLSearchParams(document.currentScript.src.split('?')[1]);
   const appId = params.get('appId') || 'default';
   
-  // Auto-detect API URL based on current location
+  // API URL Configuration
   const getAPIURL = () => {
-    // Always use production backend URL
     return 'https://server-three-black.vercel.app';
   };
+
+  // Aitel Logo (Professional Blue Theme)
+  const AITEL_LOGO = 'data:image/svg+xml,%3Csvg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 500 200"%3E%3Cstyle%3E.logo-text{font-family:Arial,sans-serif;font-size:100px;font-weight:900;fill:%231a3a5c;letter-spacing:-5px}.logo-dot{fill:%231a3a5c}.logo-arc{fill:none;stroke:%231a3a5c;stroke-width:14;stroke-linecap:round}%3C/style%3E%3Cpath class="logo-arc" d="M 40 80 Q 150 20, 260 80"/%3E%3Ccircle class="logo-dot" cx="70" cy="70" r="16"/%3E%3Ccircle class="logo-dot" cx="240" cy="110" r="10"/%3E%3Ctext class="logo-text" x="30" y="150"%3EAitel%3C/text%3E%3C/svg%3E';
 
   const CONFIG = {
     default: {
       API_URL: getAPIURL(),
       NAME: 'Aitel Assistant',
-      LOGO: 'data:image/svg+xml,%3Csvg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100"%3E%3Crect width="100" height="100" fill="%23667eea" rx="50"/%3E%3Ctext x="50" y="60" font-size="60" font-weight="bold" fill="white" text-anchor="middle"%3EA%3C/text%3E%3C/svg%3E'
+      LOGO: AITEL_LOGO
     }
   };
 
@@ -25,7 +27,6 @@
       this.userId = this.generateUserId();
       this.isOpen = false;
       this.isLoading = false;
-      this.audience = 'client';
       this.init();
     }
 
@@ -47,21 +48,21 @@
     createDOM() {
       const style = document.createElement('style');
       style.textContent = `
+        /* ===== CHAT BUTTON ===== */
         .aitel-widget-btn {
           position: fixed;
           bottom: 20px;
           right: 20px;
-          width: 60px;
-          height: 60px;
+          width: 56px;
+          height: 56px;
           border-radius: 50%;
           background: white;
-          border: none;
+          border: 2px solid #1a3a5c;
           cursor: pointer;
-          box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+          box-shadow: 0 2px 8px rgba(26, 58, 92, 0.15);
           display: flex;
           align-items: center;
           justify-content: center;
-          font-size: 24px;
           z-index: 9998;
           transition: all 0.3s ease;
           padding: 0;
@@ -69,57 +70,64 @@
         }
 
         .aitel-widget-btn img {
-          width: 100%;
-          height: 100%;
-          object-fit: cover;
+          width: 85%;
+          height: 85%;
+          object-fit: contain;
         }
 
         .aitel-widget-btn:hover {
-          transform: scale(1.1);
-          box-shadow: 0 6px 16px rgba(0, 0, 0, 0.25);
+          transform: scale(1.05);
+          box-shadow: 0 4px 12px rgba(26, 58, 92, 0.2);
         }
 
         .aitel-widget-btn.active {
-          bottom: 380px;
+          bottom: auto;
+          top: 20px;
         }
 
+        /* ===== CHAT PANEL ===== */
         .aitel-widget-panel {
           position: fixed;
           bottom: 20px;
           right: 20px;
           width: 380px;
-          height: 500px;
-          background: white;
+          height: 520px;
+          background: #ffffff;
           border-radius: 12px;
-          box-shadow: 0 5px 40px rgba(0, 0, 0, 0.16);
+          box-shadow: 0 5px 30px rgba(0, 0, 0, 0.12);
           display: none;
           flex-direction: column;
           z-index: 9999;
           opacity: 0;
-          transform: translateY(20px);
-          transition: all 0.3s ease;
+          transform: scale(0.9) translateY(20px);
+          transition: all 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
+          border: 1px solid #e0e0e0;
         }
 
         .aitel-widget-panel.open {
           display: flex;
           opacity: 1;
-          transform: translateY(0);
+          transform: scale(1) translateY(0);
         }
 
+        /* ===== HEADER ===== */
         .aitel-widget-header {
-          background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+          background: linear-gradient(135deg, #1a3a5c 0%, #2d5a8a 100%);
           color: white;
           padding: 16px;
           border-radius: 12px 12px 0 0;
           display: flex;
           justify-content: space-between;
           align-items: center;
+          flex-shrink: 0;
+          border-bottom: 1px solid rgba(255, 255, 255, 0.1);
         }
 
         .aitel-widget-header h3 {
           margin: 0;
           font-size: 16px;
           font-weight: 600;
+          letter-spacing: 0.5px;
         }
 
         .aitel-widget-close {
@@ -129,40 +137,37 @@
           cursor: pointer;
           font-size: 20px;
           padding: 0;
+          width: 28px;
+          height: 28px;
+          display: flex;
+          align-items: center;
+          justify-content: center;
+          border-radius: 4px;
+          transition: background 0.2s;
         }
 
-        .aitel-widget-audience {
-          padding: 12px 16px;
-          border-bottom: 1px solid #eee;
+        .aitel-widget-close:hover {
+          background: rgba(255, 255, 255, 0.1);
         }
 
-        .aitel-widget-audience label {
-          display: block;
-          font-size: 12px;
-          font-weight: 600;
-          color: #666;
-          margin-bottom: 6px;
-        }
-
-        .aitel-widget-audience select {
-          width: 100%;
-          padding: 8px;
-          border: 1px solid #ddd;
-          border-radius: 6px;
-          font-size: 13px;
-          font-family: inherit;
-        }
-
+        /* ===== MESSAGES ===== */
         .aitel-widget-messages {
           flex: 1;
           overflow-y: auto;
-          padding: 16px;
-          background: #f9f9f9;
+          padding: 14px 12px;
+          background: #f8f9fa;
+          display: flex;
+          flex-direction: column;
+          gap: 10px;
         }
 
-        .aitel-widget-message {
-          margin-bottom: 12px;
-          display: flex;
+        .aitel-widget-message-bubble {
+          padding: 10px 12px;
+          border-radius: 8px;
+          font-size: 13px;
+          line-height: 1.5;
+          word-wrap: break-word;
+          max-width: 85%;
           animation: slideIn 0.3s ease;
         }
 
@@ -177,66 +182,30 @@
           }
         }
 
-        .aitel-widget-message.user {
-          justify-content: flex-end;
-        }
-
-        .aitel-widget-message-bubble {
-          max-width: 70%;
-          padding: 10px 14px;
-          border-radius: 8px;
-          font-size: 13px;
-          line-height: 1.4;
-          word-wrap: break-word;
-        }
-
-        .aitel-widget-message.bot .aitel-widget-message-bubble {
+        .aitel-widget-bot-message {
           background: white;
           color: #333;
-          border: 1px solid #ddd;
+          border: 1px solid #e0e0e0;
+          align-self: flex-start;
+          margin-left: 0;
         }
 
-        .aitel-widget-message.user .aitel-widget-message-bubble {
-          background: #667eea;
+        .aitel-widget-user-message {
+          background: #1a3a5c;
           color: white;
+          align-self: flex-end;
+          margin-right: 0;
         }
 
-        .aitel-widget-typing {
-          display: flex;
-          gap: 4px;
-          padding: 10px 14px;
-        }
-
-        .aitel-widget-typing-dot {
-          width: 8px;
-          height: 8px;
-          border-radius: 50%;
-          background: #999;
-          animation: pulse 1.4s infinite;
-        }
-
-        .aitel-widget-typing-dot:nth-child(2) {
-          animation-delay: 0.2s;
-        }
-
-        .aitel-widget-typing-dot:nth-child(3) {
-          animation-delay: 0.4s;
-        }
-
-        @keyframes pulse {
-          0%, 60%, 100% {
-            opacity: 0.3;
-          }
-          30% {
-            opacity: 1;
-          }
-        }
-
+        /* ===== INPUT AREA ===== */
         .aitel-widget-input-box {
           display: flex;
           gap: 8px;
-          padding: 12px 16px;
-          border-top: 1px solid #eee;
+          padding: 12px;
+          border-top: 1px solid #e0e0e0;
+          background: white;
+          flex-shrink: 0;
+          border-radius: 0 0 12px 12px;
         }
 
         .aitel-widget-input {
@@ -248,37 +217,47 @@
           font-family: inherit;
           resize: none;
           max-height: 60px;
+          transition: border-color 0.2s;
         }
 
         .aitel-widget-input:focus {
           outline: none;
-          border-color: #667eea;
+          border-color: #1a3a5c;
+          background: #f9fafb;
         }
 
         .aitel-widget-send-btn {
-          background: #667eea;
+          padding: 10px 14px;
+          background: #1a3a5c;
           color: white;
           border: none;
           border-radius: 6px;
-          width: 36px;
-          height: 36px;
           cursor: pointer;
+          font-size: 16px;
+          transition: background 0.2s;
+          flex-shrink: 0;
           display: flex;
           align-items: center;
           justify-content: center;
-          font-size: 18px;
-          transition: all 0.2s;
+          min-width: 40px;
+          height: 40px;
         }
 
         .aitel-widget-send-btn:hover {
-          background: #5568d3;
+          background: #2d5a8a;
+        }
+
+        .aitel-widget-send-btn:active {
+          transform: scale(0.95);
         }
 
         .aitel-widget-send-btn:disabled {
           background: #ccc;
           cursor: not-allowed;
+          transform: none;
         }
 
+        /* ===== MODAL ===== */
         .aitel-widget-modal-overlay {
           display: none;
           position: fixed;
@@ -286,7 +265,7 @@
           left: 0;
           right: 0;
           bottom: 0;
-          background: rgba(0,0,0,0.5);
+          background: rgba(0, 0, 0, 0.5);
           z-index: 10000;
           align-items: center;
           justify-content: center;
@@ -295,26 +274,29 @@
         .aitel-widget-modal {
           background: white;
           border-radius: 8px;
-          padding: 20px;
+          padding: 24px;
           max-width: 400px;
           width: 90%;
+          box-shadow: 0 10px 40px rgba(0, 0, 0, 0.2);
         }
 
         .aitel-widget-modal h3 {
-          margin: 0 0 10px 0;
+          margin: 0 0 12px 0;
           font-size: 18px;
+          color: #1a3a5c;
         }
 
         .aitel-widget-modal p {
-          margin: 0 0 15px 0;
+          margin: 0 0 16px 0;
           font-size: 13px;
           color: #666;
+          line-height: 1.5;
         }
 
         .aitel-widget-modal form {
           display: flex;
           flex-direction: column;
-          gap: 10px;
+          gap: 12px;
         }
 
         .aitel-widget-modal input,
@@ -325,23 +307,62 @@
           border-radius: 6px;
           font-size: 13px;
           font-family: inherit;
+          transition: border-color 0.2s;
+        }
+
+        .aitel-widget-modal input:focus,
+        .aitel-widget-modal textarea:focus,
+        .aitel-widget-modal select:focus {
+          outline: none;
+          border-color: #1a3a5c;
+          background: #f9fafb;
         }
 
         .aitel-widget-modal button {
           padding: 10px;
-          background: #667eea;
+          background: #1a3a5c;
           color: white;
           border: none;
           border-radius: 6px;
           cursor: pointer;
           font-size: 13px;
+          font-weight: 500;
+          transition: background 0.2s;
+        }
+
+        .aitel-widget-modal button:hover {
+          background: #2d5a8a;
         }
 
         .aitel-widget-modal button:last-child {
-          background: #ccc;
+          background: #e0e0e0;
           color: #333;
         }
 
+        .aitel-widget-modal button:last-child:hover {
+          background: #d0d0d0;
+        }
+
+        /* ===== SCROLLBAR ===== */
+        .aitel-widget-messages::-webkit-scrollbar {
+          width: 6px;
+        }
+
+        .aitel-widget-messages::-webkit-scrollbar-track {
+          background: #f0f0f0;
+          border-radius: 10px;
+        }
+
+        .aitel-widget-messages::-webkit-scrollbar-thumb {
+          background: #1a3a5c;
+          border-radius: 10px;
+        }
+
+        .aitel-widget-messages::-webkit-scrollbar-thumb:hover {
+          background: #2d5a8a;
+        }
+
+        /* ===== RESPONSIVE ===== */
         @media (max-width: 480px) {
           .aitel-widget-panel {
             width: calc(100vw - 20px);
@@ -356,30 +377,21 @@
           }
 
           .aitel-widget-message-bubble {
-            max-width: 85%;
+            max-width: 80%;
           }
         }
       `;
       document.head.appendChild(style);
 
       const html = `
-        <button class="aitel-widget-btn" id="aitelWidgetBtn">
-          <img src="${config.LOGO}" alt="Chat" />
+        <button class="aitel-widget-btn" id="aitelWidgetBtn" title="Chat with Aitel">
+          <img src="${config.LOGO}" alt="Aitel" />
         </button>
 
         <div class="aitel-widget-panel" id="aitelWidgetPanel">
           <div class="aitel-widget-header">
             <h3>${config.NAME}</h3>
             <button class="aitel-widget-close" id="aitelWidgetCloseBtn">✕</button>
-          </div>
-
-          <div class="aitel-widget-audience">
-            <label>Select Department:</label>
-            <select id="aitelWidgetAudience">
-              <option value="client">Client Support</option>
-              <option value="sales_marketing">Sales Team</option>
-              <option value="engineers">Prompt Engineers</option>
-            </select>
           </div>
 
           <div class="aitel-widget-messages" id="aitelWidgetMessages"></div>
@@ -392,7 +404,7 @@
               placeholder="Type your message..."
               autocomplete="off"
             />
-            <button class="aitel-widget-send-btn" id="aitelWidgetSendBtn">➤</button>
+            <button class="aitel-widget-send-btn" id="aitelWidgetSendBtn" title="Send">➤</button>
           </div>
         </div>
 
@@ -409,7 +421,6 @@
       const closeBtn = document.getElementById('aitelWidgetCloseBtn');
       const sendBtn = document.getElementById('aitelWidgetSendBtn');
       const input = document.getElementById('aitelWidgetInput');
-      const audienceSelect = document.getElementById('aitelWidgetAudience');
 
       btn.addEventListener('click', () => this.togglePanel());
       closeBtn.addEventListener('click', () => this.closePanel());
@@ -420,10 +431,6 @@
           e.preventDefault();
           this.sendMessage();
         }
-      });
-
-      audienceSelect.addEventListener('change', (e) => {
-        this.audience = e.target.value;
       });
     }
 
@@ -473,36 +480,11 @@
 
     displayMessage(text, sender) {
       const messagesContainer = document.getElementById('aitelWidgetMessages');
-      const messageDiv = document.createElement('div');
-      messageDiv.className = `aitel-widget-message ${sender}`;
-
       const bubble = document.createElement('div');
-      bubble.className = 'aitel-widget-message-bubble';
+      bubble.className = `aitel-widget-message-bubble aitel-widget-${sender}-message`;
       bubble.textContent = text;
-
-      messageDiv.appendChild(bubble);
-      messagesContainer.appendChild(messageDiv);
+      messagesContainer.appendChild(bubble);
       messagesContainer.scrollTop = messagesContainer.scrollHeight;
-    }
-
-    showTyping() {
-      const messagesContainer = document.getElementById('aitelWidgetMessages');
-      const typingDiv = document.createElement('div');
-      typingDiv.className = 'aitel-widget-message bot aitel-widget-typing-indicator';
-      typingDiv.innerHTML = `
-        <div class="aitel-widget-typing">
-          <div class="aitel-widget-typing-dot"></div>
-          <div class="aitel-widget-typing-dot"></div>
-          <div class="aitel-widget-typing-dot"></div>
-        </div>
-      `;
-      messagesContainer.appendChild(typingDiv);
-      messagesContainer.scrollTop = messagesContainer.scrollHeight;
-    }
-
-    hideTyping() {
-      const typing = document.querySelector('.aitel-widget-typing-indicator');
-      if (typing) typing.remove();
     }
 
     async sendMessage() {
@@ -513,10 +495,8 @@
 
       this.displayMessage(message, 'user');
       input.value = '';
-      input.style.height = 'auto';
+      input.focus();
       this.isLoading = true;
-
-      this.showTyping();
 
       try {
         const chatEndpoint = `${config.API_URL}/api/chat`;
@@ -526,25 +506,15 @@
           body: JSON.stringify({
             conversationId: this.conversationId,
             message,
-            userId: this.userId,
-            audience: this.audience
+            userId: this.userId
           })
         });
 
-        let data = {};
         if (!response.ok) {
-          console.error('Response status:', response.status);
           throw new Error(`HTTP ${response.status}`);
         }
 
-        try {
-          data = await response.json();
-        } catch (e) {
-          console.error('Parse error:', e);
-          data = { answer: 'Error: Could not parse response' };
-        }
-
-        this.hideTyping();
+        const data = await response.json();
 
         if (data.answer) {
           this.displayMessage(data.answer, 'bot');
@@ -552,123 +522,14 @@
             this.conversationId = data.conversationId;
             this.saveSession();
           }
-          
-          // Show popups if needed
-          if (data.showContactCard) {
-            setTimeout(() => {
-              if (data.route === 'sales_marketing') {
-                this.showSalesPopup();
-              } else if (data.route === 'engineers') {
-                this.showEngineersPopup();
-              }
-            }, 500);
-          }
         } else {
-          this.displayMessage('Sorry, I could not process your request. Please try again.', 'bot');
+          this.displayMessage('I apologize, but I encountered an issue. Please try again.', 'bot');
         }
       } catch (error) {
         console.error('Chat error:', error);
-        this.hideTyping();
-        this.displayMessage('Sorry, there was an error connecting to the server. Please check your internet connection and try again.', 'bot');
+        this.displayMessage('Connection error. Please check your internet and try again.', 'bot');
       } finally {
         this.isLoading = false;
-        input.focus();
-      }
-    }
-
-    showSalesPopup() {
-      const overlay = document.getElementById('aitelWidgetModalOverlay');
-      const modal = document.getElementById('aitelWidgetModal');
-      if (!overlay || !modal) return;
-
-      const content = `
-        <h3>Contact Sales Team</h3>
-        <p>Share your requirements and our sales team will reach you soon.</p>
-        <form id="aitelSalesForm">
-          <input type="text" placeholder="Your Name" name="name" required />
-          <input type="tel" placeholder="Phone Number" name="phone" required />
-          <input type="email" placeholder="Email" name="email" />
-          <input type="text" placeholder="Company Name" name="company" />
-          <textarea placeholder="Your Message" name="message" required></textarea>
-          <button type="submit">Submit to Sales Team</button>
-          <button type="button" onclick="document.getElementById('aitelWidgetModalOverlay').style.display='none'">Cancel</button>
-        </form>
-      `;
-
-      modal.innerHTML = content;
-      overlay.style.display = 'flex';
-
-      document.getElementById('aitelSalesForm').addEventListener('submit', (e) => {
-        e.preventDefault();
-        const formData = new FormData(e.target);
-        this.submitContactForm(formData, 'sales_marketing');
-      });
-    }
-
-    showEngineersPopup() {
-      const overlay = document.getElementById('aitelWidgetModalOverlay');
-      const modal = document.getElementById('aitelWidgetModal');
-      if (!overlay || !modal) return;
-
-      const content = `
-        <h3>Contact Prompt Engineers</h3>
-        <p>Share your technical issue and our engineers will help you.</p>
-        <form id="aitelEngineersForm">
-          <input type="text" placeholder="Your Name" name="name" required />
-          <input type="tel" placeholder="Phone Number" name="phone" required />
-          <input type="email" placeholder="Email" name="email" />
-          <select name="topic">
-            <option value="">Select Topic</option>
-            <option value="prompting">Prompting / Agent setup</option>
-            <option value="api">API Integration</option>
-            <option value="dashboard">Dashboard</option>
-            <option value="other">Other</option>
-          </select>
-          <textarea placeholder="Your Issue" name="message" required></textarea>
-          <button type="submit">Submit to Engineers</button>
-          <button type="button" onclick="document.getElementById('aitelWidgetModalOverlay').style.display='none'">Cancel</button>
-        </form>
-      `;
-
-      modal.innerHTML = content;
-      overlay.style.display = 'flex';
-
-      document.getElementById('aitelEngineersForm').addEventListener('submit', (e) => {
-        e.preventDefault();
-        const formData = new FormData(e.target);
-        this.submitContactForm(formData, 'engineers');
-      });
-    }
-
-    async submitContactForm(formData, department) {
-      const data = {
-        conversationId: this.conversationId,
-        department,
-        name: formData.get('name'),
-        phone: formData.get('phone'),
-        email: formData.get('email'),
-        companyName: formData.get('company'),
-        productModule: formData.get('topic'),
-        message: formData.get('message')
-      };
-
-      try {
-        const contactEndpoint = `${config.API_URL}/api/contact`;
-        const response = await fetch(contactEndpoint, {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify(data)
-        });
-
-        if (response.ok) {
-          this.displayMessage(`✅ Submitted to ${department === 'sales_marketing' ? 'Sales Team' : 'Prompt Engineers'}. Please wait for their reply.`, 'bot');
-          document.getElementById('aitelWidgetModalOverlay').style.display = 'none';
-        } else {
-          throw new Error(`HTTP ${response.status}`);
-        }
-      } catch (error) {
-        console.error('Submit error:', error);
-        this.displayMessage('Error submitting. Please try again.', 'bot');
       }
     }
   }

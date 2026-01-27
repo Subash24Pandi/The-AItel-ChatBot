@@ -99,109 +99,85 @@ app.post('/api/chat', async (req, res) => {
     // Save user message
     const userMsgRow = await supabaseService.saveMessage(convId, 'user', message);
 
-    // Intent decide (sales / engineers / aitelsupport)
-    const intent = knowledgeBase.classifyIntent?.(message) || 'aitelsupport';
+    // Step 1: Use LLM to understand intent and normalize the question
+    // This helps with spelling mistakes, grammatical errors, and intent understanding
+    let normalizedQuestion = message;
+    let llmUsedForNormalization = false;
 
-    // Popup rules
-    const popupByIntent =
-      intent === 'sales_marketing' ? 'sales_marketing' :
-      intent === 'engineers' ? 'engineers' :
-      null;
+    try {
+      const normalizationPrompt = `You are a question normalizer. Your job is to understand the user's question and rephrase it in a clear, standard form. Do not answer the question, just return the normalized/clarified version of the question.
 
+User question: "${message}"
+
+Return only the normalized question, nothing else:`;
+
+      const normResponse = await llmService.chat(
+        [{ role: 'user', content: normalizationPrompt }],
+        ''
+      );
+
+      if (normResponse.success && normResponse.message) {
+        normalizedQuestion = (normResponse.message || '').trim();
+        llmUsedForNormalization = true;
+        console.log(`📝 Question normalized: "${message}" → "${normalizedQuestion}"`);
+      }
+    } catch (e) {
+      // If LLM fails for normalization, use original question
+      console.log('⚠️ LLM normalization failed, using original question');
+    }
+
+    // Step 2: Search KB with both original and normalized questions
     const KB_THRESHOLD = Number(process.env.KB_THRESHOLD || 0.22);
-    // Safety floor to reduce false KB matches without changing .env
     const EFFECTIVE_KB_THRESHOLD = Math.max(KB_THRESHOLD, 0.32);
-    const kbResult = knowledgeBase.getBestAnswer?.(message);
+    
+    let kbResult = knowledgeBase.getBestAnswer?.(normalizedQuestion);
+    
+    // If normalized search doesn't work well, try original question
+    if (!kbResult || (kbResult.confidence ?? 0) < EFFECTIVE_KB_THRESHOLD) {
+      kbResult = knowledgeBase.getBestAnswer?.(message);
+    }
 
-    // Guard: if user asks delete/remove/clear and KB answer doesn't mention it, skip KB.
-    const deletionQuery = hasDeletionIntent(message);
-    const kbLooksWrongForDelete =
-      deletionQuery &&
-      kbResult?.answer &&
-      !/delete|remove|clear|erase|reset|purge/i.test(kbResult.answer);
-
-    // KB answer
-    if (
-      kbResult?.answer &&
-      (kbResult.confidence ?? 0) >= EFFECTIVE_KB_THRESHOLD &&
-      !kbLooksWrongForDelete
-    ) {
+    // Step 3: Return ONLY KB answer, never LLM-generated content
+    // If KB has a good match, return it
+    if (kbResult?.answer && (kbResult.confidence ?? 0) >= EFFECTIVE_KB_THRESHOLD) {
       const botMsgRow = await supabaseService.saveMessage(convId, 'bot', kbResult.answer);
-      const route = popupByIntent ? popupByIntent : 'kb';
 
       return res.json({
         answer: kbResult.answer,
         confidence: kbResult.confidence ?? 0.8,
-        route,
-        showContactCard: shouldShowContact(route),
+        route: 'kb',
+        showContactCard: false, // Never auto-show contact card
         conversationId: convId,
         userMessageId: userMsgRow?.id,
         botMessageId: botMsgRow?.id,
-        llmUsed: null,
+        llmUsed: 'normalization_only',
         llmError: null
       });
     }
 
-    // Build KB context for LLM
-    let context = '';
-    const chunks = knowledgeBase.retrieve?.(message, 3);
-    if (Array.isArray(chunks) && chunks.length) context = chunks.join('\n\n---\n\n');
-
-    // Build history
-    // NOTE: To avoid "wrong answer drift" from earlier assistant messages, we only send the current user question.
-    // (Your conversation is still stored in Supabase; this is only the LLM request context.)
-    const messages = [{ role: 'user', content: message }];
-
-    // Call LLM
-    const llmResponse = await llmService.chat(messages, context);
-
-    // LLM fail -> show popup
-    if (!llmResponse.success) {
-      const fallback = contactFallback();
-      const botMsgRow = await supabaseService.saveMessage(convId, 'bot', fallback);
-
-      const route = popupByIntent ? popupByIntent : 'engineers';
-
-      return res.json({
-        answer: fallback,
-        confidence: 0.2,
-        route,
-        showContactCard: shouldShowContact(route),
-        conversationId: convId,
-        userMessageId: userMsgRow?.id,
-        botMessageId: botMsgRow?.id,
-        llmUsed: llmResponse?.used || null,
-        llmError: llmResponse?.error || 'LLM_FAILED'
-      });
-    }
-
-    // LLM success
-    const botAnswer = (llmResponse.message || '').trim() || contactFallback();
-    const confidence = llmService.checkConfidence(botAnswer);
-    const botMsgRow = await supabaseService.saveMessage(convId, 'bot', botAnswer);
-
-    let route = 'llm';
-    if (popupByIntent) route = popupByIntent;
-    else if (confidence < 0.4 || botAnswer === contactFallback()) route = 'engineers';
+    // Step 4: No good KB match found - return "I don't have that information"
+    // instead of generating LLM content
+    const noAnswerMessage = 'I don\'t have information about that. Please contact our support team for assistance.';
+    const botMsgRow = await supabaseService.saveMessage(convId, 'bot', noAnswerMessage);
 
     return res.json({
-      answer: botAnswer,
-      confidence,
-      route,
-      showContactCard: shouldShowContact(route),
+      answer: noAnswerMessage,
+      confidence: 0.0,
+      route: 'contact_suggested',
+      showContactCard: false, // User can click contact button manually
       conversationId: convId,
       userMessageId: userMsgRow?.id,
       botMessageId: botMsgRow?.id,
-      llmUsed: llmResponse?.used || null,
+      llmUsed: 'normalization_only',
       llmError: null
     });
   } catch (error) {
     console.error('❌ /api/chat error:', error.message);
     return res.json({
       answer: 'I apologize, but I encountered an error. Please try again.',
-      confidence: 0.3,
-      route: 'engineers',
-      showContactCard: true
+      confidence: 0.0,
+      route: 'error',
+      showContactCard: false
     });
   }
 });
