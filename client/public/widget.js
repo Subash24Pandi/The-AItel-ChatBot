@@ -6,7 +6,7 @@
   // Auto-detect API URL based on current location
   const getAPIURL = () => {
     // Always use production backend URL
-    return 'https://server-three-black.vercel.app/api/chat';
+    return 'https://server-three-black.vercel.app';
   };
 
   const CONFIG = {
@@ -279,6 +279,69 @@
           cursor: not-allowed;
         }
 
+        .aitel-widget-modal-overlay {
+          display: none;
+          position: fixed;
+          top: 0;
+          left: 0;
+          right: 0;
+          bottom: 0;
+          background: rgba(0,0,0,0.5);
+          z-index: 10000;
+          align-items: center;
+          justify-content: center;
+        }
+
+        .aitel-widget-modal {
+          background: white;
+          border-radius: 8px;
+          padding: 20px;
+          max-width: 400px;
+          width: 90%;
+        }
+
+        .aitel-widget-modal h3 {
+          margin: 0 0 10px 0;
+          font-size: 18px;
+        }
+
+        .aitel-widget-modal p {
+          margin: 0 0 15px 0;
+          font-size: 13px;
+          color: #666;
+        }
+
+        .aitel-widget-modal form {
+          display: flex;
+          flex-direction: column;
+          gap: 10px;
+        }
+
+        .aitel-widget-modal input,
+        .aitel-widget-modal textarea,
+        .aitel-widget-modal select {
+          padding: 10px;
+          border: 1px solid #ddd;
+          border-radius: 6px;
+          font-size: 13px;
+          font-family: inherit;
+        }
+
+        .aitel-widget-modal button {
+          padding: 10px;
+          background: #667eea;
+          color: white;
+          border: none;
+          border-radius: 6px;
+          cursor: pointer;
+          font-size: 13px;
+        }
+
+        .aitel-widget-modal button:last-child {
+          background: #ccc;
+          color: #333;
+        }
+
         @media (max-width: 480px) {
           .aitel-widget-panel {
             width: calc(100vw - 20px);
@@ -331,6 +394,10 @@
             />
             <button class="aitel-widget-send-btn" id="aitelWidgetSendBtn">➤</button>
           </div>
+        </div>
+
+        <div class="aitel-widget-modal-overlay" id="aitelWidgetModalOverlay">
+          <div class="aitel-widget-modal" id="aitelWidgetModal"></div>
         </div>
       `;
 
@@ -452,7 +519,8 @@
       this.showTyping();
 
       try {
-        const response = await fetch(config.API_URL, {
+        const chatEndpoint = `${config.API_URL}/api/chat`;
+        const response = await fetch(chatEndpoint, {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify({
@@ -464,9 +532,15 @@
         });
 
         let data = {};
+        if (!response.ok) {
+          console.error('Response status:', response.status);
+          throw new Error(`HTTP ${response.status}`);
+        }
+
         try {
           data = await response.json();
         } catch (e) {
+          console.error('Parse error:', e);
           data = { answer: 'Error: Could not parse response' };
         }
 
@@ -478,16 +552,123 @@
             this.conversationId = data.conversationId;
             this.saveSession();
           }
+          
+          // Show popups if needed
+          if (data.showContactCard) {
+            setTimeout(() => {
+              if (data.route === 'sales_marketing') {
+                this.showSalesPopup();
+              } else if (data.route === 'engineers') {
+                this.showEngineersPopup();
+              }
+            }, 500);
+          }
         } else {
-          this.displayMessage('Sorry, I could not process your request.', 'bot');
+          this.displayMessage('Sorry, I could not process your request. Please try again.', 'bot');
         }
       } catch (error) {
         console.error('Chat error:', error);
         this.hideTyping();
-        this.displayMessage('Sorry, there was an error. Please try again.', 'bot');
+        this.displayMessage('Sorry, there was an error connecting to the server. Please check your internet connection and try again.', 'bot');
       } finally {
         this.isLoading = false;
         input.focus();
+      }
+    }
+
+    showSalesPopup() {
+      const overlay = document.getElementById('aitelWidgetModalOverlay');
+      const modal = document.getElementById('aitelWidgetModal');
+      if (!overlay || !modal) return;
+
+      const content = `
+        <h3>Contact Sales Team</h3>
+        <p>Share your requirements and our sales team will reach you soon.</p>
+        <form id="aitelSalesForm">
+          <input type="text" placeholder="Your Name" name="name" required />
+          <input type="tel" placeholder="Phone Number" name="phone" required />
+          <input type="email" placeholder="Email" name="email" />
+          <input type="text" placeholder="Company Name" name="company" />
+          <textarea placeholder="Your Message" name="message" required></textarea>
+          <button type="submit">Submit to Sales Team</button>
+          <button type="button" onclick="document.getElementById('aitelWidgetModalOverlay').style.display='none'">Cancel</button>
+        </form>
+      `;
+
+      modal.innerHTML = content;
+      overlay.style.display = 'flex';
+
+      document.getElementById('aitelSalesForm').addEventListener('submit', (e) => {
+        e.preventDefault();
+        const formData = new FormData(e.target);
+        this.submitContactForm(formData, 'sales_marketing');
+      });
+    }
+
+    showEngineersPopup() {
+      const overlay = document.getElementById('aitelWidgetModalOverlay');
+      const modal = document.getElementById('aitelWidgetModal');
+      if (!overlay || !modal) return;
+
+      const content = `
+        <h3>Contact Prompt Engineers</h3>
+        <p>Share your technical issue and our engineers will help you.</p>
+        <form id="aitelEngineersForm">
+          <input type="text" placeholder="Your Name" name="name" required />
+          <input type="tel" placeholder="Phone Number" name="phone" required />
+          <input type="email" placeholder="Email" name="email" />
+          <select name="topic">
+            <option value="">Select Topic</option>
+            <option value="prompting">Prompting / Agent setup</option>
+            <option value="api">API Integration</option>
+            <option value="dashboard">Dashboard</option>
+            <option value="other">Other</option>
+          </select>
+          <textarea placeholder="Your Issue" name="message" required></textarea>
+          <button type="submit">Submit to Engineers</button>
+          <button type="button" onclick="document.getElementById('aitelWidgetModalOverlay').style.display='none'">Cancel</button>
+        </form>
+      `;
+
+      modal.innerHTML = content;
+      overlay.style.display = 'flex';
+
+      document.getElementById('aitelEngineersForm').addEventListener('submit', (e) => {
+        e.preventDefault();
+        const formData = new FormData(e.target);
+        this.submitContactForm(formData, 'engineers');
+      });
+    }
+
+    async submitContactForm(formData, department) {
+      const data = {
+        conversationId: this.conversationId,
+        department,
+        name: formData.get('name'),
+        phone: formData.get('phone'),
+        email: formData.get('email'),
+        companyName: formData.get('company'),
+        productModule: formData.get('topic'),
+        message: formData.get('message')
+      };
+
+      try {
+        const contactEndpoint = `${config.API_URL}/api/contact`;
+        const response = await fetch(contactEndpoint, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify(data)
+        });
+
+        if (response.ok) {
+          this.displayMessage(`✅ Submitted to ${department === 'sales_marketing' ? 'Sales Team' : 'Prompt Engineers'}. Please wait for their reply.`, 'bot');
+          document.getElementById('aitelWidgetModalOverlay').style.display = 'none';
+        } else {
+          throw new Error(`HTTP ${response.status}`);
+        }
+      } catch (error) {
+        console.error('Submit error:', error);
+        this.displayMessage('Error submitting. Please try again.', 'bot');
       }
     }
   }
