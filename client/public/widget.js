@@ -10,8 +10,8 @@
     
     if (storedURL) return storedURL;
     
-    // Try /api/chat first (relative path)
-    return currentDomain + '/api/chat';
+    // Use production backend URL
+    return 'https://server-three-black.vercel.app/api/chat';
   };
 
   const CONFIG = {
