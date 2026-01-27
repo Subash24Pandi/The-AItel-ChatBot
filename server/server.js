@@ -62,7 +62,8 @@ app.get('/health', (req, res) => {
     kbCount: kbCount,
     nodeEnv: process.env.NODE_ENV || 'development',
     cwd: process.cwd(),
-    __dirname: __dirname
+    __dirname: __dirname,
+    version: '2.1' // Updated version number
   };
   res.json(debugInfo);
 });
