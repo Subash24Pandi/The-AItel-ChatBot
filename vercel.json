@@ -1,0 +1,5 @@
+{
+  "buildCommand": "echo 'Using standard Node.js build'",
+  "outputDirectory": ".",
+  "installCommand": "npm install --legacy-peer-deps || npm install"
+}
