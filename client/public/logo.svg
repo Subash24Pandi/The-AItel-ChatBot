@@ -1,0 +1,35 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 500 500" width="500" height="500">
+  <!-- Background -->
+  <rect width="500" height="500" fill="#ffffff"/>
+  
+  <!-- Aitel Logo -->
+  <!-- Smile arc -->
+  <path d="M 100 200 Q 250 120 400 200" stroke="#001f3f" stroke-width="25" fill="none" stroke-linecap="round"/>
+  
+  <!-- Letter A -->
+  <g transform="translate(60, 220)">
+    <path d="M 0 180 L 60 0 L 120 180 M 30 120 L 90 120" stroke="#001f3f" stroke-width="20" fill="none" stroke-linecap="round" stroke-linejoin="round"/>
+  </g>
+  
+  <!-- Letter i (dot) -->
+  <circle cx="195" cy="260" r="12" fill="#001f3f"/>
+  <!-- Letter i (line) -->
+  <line x1="195" y1="290" x2="195" y2="400" stroke="#001f3f" stroke-width="20" stroke-linecap="round"/>
+  
+  <!-- Letter t -->
+  <g transform="translate(240, 260)">
+    <line x1="30" y1="0" x2="30" y2="120" stroke="#001f3f" stroke-width="20" stroke-linecap="round"/>
+    <line x1="0" y1="20" x2="60" y2="20" stroke="#001f3f" stroke-width="20" stroke-linecap="round"/>
+  </g>
+  
+  <!-- Letter e -->
+  <g transform="translate(310, 260)">
+    <path d="M 60 20 L 15 20 L 15 70 L 55 70 M 15 145 Q 15 150 20 150 L 55 150 Q 60 150 60 145" 
+          stroke="#001f3f" stroke-width="20" fill="none" stroke-linecap="round" stroke-linejoin="round"/>
+  </g>
+  
+  <!-- Letter L -->
+  <g transform="translate(380, 260)">
+    <path d="M 20 0 L 20 150 L 60 150" stroke="#001f3f" stroke-width="20" fill="none" stroke-linecap="round" stroke-linejoin="round"/>
+  </g>
+</svg>
