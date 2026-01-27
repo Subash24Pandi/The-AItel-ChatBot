@@ -1,394 +1,220 @@
-# 🎯 Aitel Chatbot - Quick Reference Checklist
+# 🚀 Aitel Chatbot - Quick Start Guide
 
-## ✅ Project Complete!
+## Embed on Your Website
 
-Your production-ready Aitel chatbot includes:
+Add this **single line** before the closing `</body>` tag:
 
-### Core Features
-- [x] Client-facing chatbot widget (floating "A" button)
-- [x] Black & white modern theme with animations
-- [x] Knowledge base integration with TF-IDF retrieval
-- [x] Smart intent classification & routing
-- [x] Three escalation popups (Support, Sales, Engineering)
-- [x] Three team dashboards with real-time updates
-- [x] Two-way messaging system
-- [x] Supabase database integration
-- [x] Sarvam LLM integration
+```html
+<script src="https://client-puce-one-81.vercel.app/widget.js?appId=default" crossorigin="anonymous"></script>
+```
 
-### Backend Services
-- [x] Express.js API server (port 3000)
-- [x] Chat endpoint (/api/chat)
-- [x] Contact form submission (/api/contact)
-- [x] Team dashboard endpoints (/api/team/*)
-- [x] Message retrieval (/api/messages/*)
-- [x] Knowledge base retrieval engine
-- [x] LLM service wrapper
-- [x] Supabase service layer
-
-### Frontend
-- [x] Express.js static server (port 3001)
-- [x] Client chatbot UI (index.html)
-- [x] Support team dashboard (team-support.html)
-- [x] Sales & Marketing dashboard (team-sales.html)
-- [x] Engineering dashboard (team-engineers.html)
-- [x] Responsive CSS (style.css)
-- [x] Client-side JavaScript (chatbot.js, team-dashboard.js)
-
-### Database
-- [x] Conversations table
-- [x] Messages table
-- [x] Contact requests table
-- [x] Team replies table
-- [x] Indexes for performance
-- [x] Foreign key relationships
-
-### Documentation
-- [x] README.md - Main guide
-- [x] SETUP.md - Database & environment setup
-- [x] IMPLEMENTATION_GUIDE.md - Complete walkthrough
-- [x] .env.example files for both services
-- [x] setup.sh (Mac/Linux)
-- [x] setup.bat (Windows)
+The chatbot will appear in the bottom-right corner with the Aitel logo.
 
 ---
 
-## 🚀 Getting Started (Next Steps)
+## ✅ What's Implemented
 
-### 1. **Prepare Your Supabase Account**
-   - [ ] Go to https://supabase.com
-   - [ ] Create new project
-   - [ ] Get Project URL from Settings → API
-   - [ ] Get Service Role Key from Settings → API
-   - [ ] Copy both values safely
-
-### 2. **Get Your LLM Credentials**
-   - [ ] Get LLM_ENDPOINT: `https://ooictyfklyrftfkrquok.supabase.co/functions/v1/v1-chat-completions`
-   - [ ] Get LLM_API_KEY from your provider
-   - [ ] Keep it secure
-
-### 3. **Run Setup Script**
-   - [ ] Windows: Double-click `setup.bat`
-   - [ ] Mac/Linux: Run `chmod +x setup.sh && ./setup.sh`
-   - [ ] This installs dependencies for both server & client
-
-### 4. **Configure Environment**
-   - [ ] Edit `server/.env` with your Supabase & LLM credentials
-   - [ ] Edit `client/.env` to match your server URL
-   - [ ] Save both files
-
-### 5. **Create Database Tables**
-   - [ ] Log into Supabase dashboard
-   - [ ] Go to SQL Editor
-   - [ ] Copy entire schema from SETUP.md
-   - [ ] Paste and run
-   - [ ] Verify 4 tables created (conversations, messages, contact_requests, team_replies)
-
-### 6. **Start Backend**
-   ```bash
-   cd server
-   npm start
-   ```
-   - [ ] Should see: "🚀 Aitel Chatbot Server running on port 3000"
-
-### 7. **Start Frontend** (New Terminal)
-   ```bash
-   cd client
-   npm start
-   ```
-   - [ ] Should see: "🌐 Aitel Chatbot Client running on port 3001"
-
-### 8. **Test the Application**
-   - [ ] Open http://localhost:3001 in browser
-   - [ ] Click "A" button (bottom-right)
-   - [ ] Try: "How do I log in?" (should answer from KB)
-   - [ ] Try: "What's your pricing?" (should show Sales card)
-   - [ ] Fill & submit contact form
-   - [ ] Check Supabase - should see entry in `contact_requests`
-
-### 9. **Test Team Dashboards**
-   - [ ] Open http://localhost:3001/team/support
-   - [ ] Should see the contact request you just submitted
-   - [ ] Click it to open
-   - [ ] Type a reply and click "Send Reply"
-   - [ ] Go back to client chat - reply should appear as "team" message
-
-### 10. **Deploy** (When Ready)
-   - [ ] Choose hosting (Railway, Render, Vercel, etc.)
-   - [ ] Set production environment variables
-   - [ ] Deploy backend first, then frontend
-   - [ ] Test again in production
-   - [ ] Update DNS/domain
+- ✅ Knowledge base-only responses (from english_version.txt)
+- ✅ LLM for intent understanding and question normalization
+- ✅ Handles spelling mistakes and grammar errors
+- ✅ Professional blue theme with Aitel logo
+- ✅ Clean, minimal UI design
+- ✅ Mobile responsive design
+- ✅ Conversation history persistence
+- ✅ Production ready on Vercel
 
 ---
 
-## 📂 File Structure Reference
+## 💬 How It Works
 
 ```
-chatbot/
-├── README.md ........................ Start here
-├── SETUP.md ......................... Database setup guide
-├── IMPLEMENTATION_GUIDE.md ......... Comprehensive guide
-├── setup.bat ........................ Windows setup
-├── setup.sh ......................... Mac/Linux setup
-│
-├── server/ .......................... Backend (Node.js/Express)
-│   ├── package.json
-│   ├── .env ......................... Add credentials here
-│   ├── server.js .................... Main API
-│   ├── knowledgeBase.js ............ KB retrieval
-│   ├── llmService.js ............... LLM integration
-│   └── supabaseService.js ......... Database layer
-│
-├── client/ .......................... Frontend (Static + Server)
-│   ├── package.json
-│   ├── .env ......................... Configure API URL
-│   ├── server.js .................... Serves HTML
-│   └── public/
-│       ├── index.html .............. Main chatbot app
-│       ├── team-support.html ....... Support dashboard
-│       ├── team-sales.html ......... Sales dashboard
-│       ├── team-engineers.html .... Engineering dashboard
-│       ├── css/
-│       │   └── style.css ........... All styling
-│       └── js/
-│           ├── chatbot.js .......... Client logic
-│           └── team-dashboard.js .. Team dashboard logic
-│
-└── knowledge/
-    └── english_version.txt ........ Knowledge base (Q&A)
+User asks question
+    ↓
+LLM normalizes question (handles typos, grammar)
+    ↓
+Search knowledge base for matching answer
+    ↓
+Return KB answer
+OR
+"I don't have information about that"
 ```
 
 ---
 
-## 🎨 UI Quick Reference
+## 📝 Example Conversations
 
-### Client Chatbot
-- **Logo Button**: Click to toggle chat drawer
-  - Position: Bottom-right (30px from edge)
-  - Size: 60×60px circle
-  - Color: Black with white "A"
-  
-- **Chat Messages**:
-  - User: Right-aligned, black background
-  - Bot: Left-aligned, white with border
-  - Time: 12-hour format (HH:MM AM/PM)
+### Correct Question
+```
+User: "How do I log in?"
+Bot: "Select the client portal, enter your mobile number, 
+      you will receive an OTP. Enter the OTP and log in."
+```
 
-- **Input Area**:
-  - Rounded 20px border
-  - Auto-height when text wraps
-  - Send button: Arrow icon (➤)
+### Typo Handling
+```
+User: "How doo I log in?" (typo)
+Bot: "Select the client portal, enter your mobile number, 
+      you will receive an OTP. Enter the OTP and log in."
+```
 
-### Team Dashboards
-- **Left Sidebar**: 250px wide, black background, ticket list
-- **Main Content**: White background, ticket details & reply
-- **Status Colors**: 
-  - Pending: Red (#ef4444)
-  - Responded: Green (#10b981)
-  - Closed: Gray (#6b7280)
+### Unknown Question
+```
+User: "What's the weather?"
+Bot: "I don't have information about that. 
+      Please contact our support team for assistance."
+```
 
 ---
 
-## 🔌 API Endpoints Quick Reference
+## 🎨 Chat Interface
 
-### Chat
+**Features**
+- Professional chat button with Aitel logo
+- Dark blue (#1a3a5c) theme
+- Clean message bubbles
+- Smooth animations
+- Mobile responsive
+
+**Layout**
+- Button: 56px circle (bottom-right)
+- Panel: 380px × 520px
+- Header: Dark blue gradient
+- Messages: Clean styling
+- Input: Minimal design
+
+---
+
+## 📚 Knowledge Base
+
+The chatbot knows answers to:
+
+- **Login & Account** (5 Q&A)
+- **Agents** (8 Q&A)
+- **Phone Numbers** (4 Q&A)
+- **Making Calls** (2 Q&A)
+- **Call History** (11 Q&A)
+- **Campaigns** (10 Q&A)
+- **Teams** (2 Q&A)
+- **Logout & Support** (3 Q&A)
+
+**Total:** 50 predefined question-answer pairs
+
+Full list: `knowledge/english_version.txt`
+
+---
+
+## 🔧 Customization
+
+### Change Logo
+Edit `widget.js` line 10 (AITEL_LOGO variable)
+
+### Change Colors
+Edit CSS in `widget.js` createDOM function:
+- Primary: #1a3a5c
+- Accent: #2d5a8a
+- Background: White
+
+### Add Q&A Pairs
+Edit `knowledge/english_version.txt`:
+```
+Q: Your question
+A: Your answer
+```
+
+Then redeploy backend.
+
+### Change Welcome Message
+Edit `widget.js` line ~245 (showWelcome function)
+
+---
+
+## ✅ Verification
+
+- [ ] Chat button appears (bottom-right)
+- [ ] Button shows Aitel logo
+- [ ] Click button opens chat
+- [ ] Welcome message displays
+- [ ] Can send messages
+- [ ] Bot responds
+- [ ] Mobile works
+- [ ] No console errors (F12)
+
+---
+
+## 🔍 Health Check
+
+Verify backend is running:
+```
+https://server-three-black.vercel.app/health
+```
+
+Should return:
+```json
+{ "ok": true, "port": 3000, "kbCount": 50 }
+```
+
+---
+
+## 🌐 Deployment URLs
+
+- **Frontend**: https://client-puce-one-81.vercel.app
+- **Backend**: https://server-three-black.vercel.app
+- **GitHub**: https://github.com/Subash24Pandi/The-AItel-ChatBot
+
+---
+
+## 📊 API Reference
+
+### Chat Endpoint
 ```
 POST /api/chat
-{ conversationId, message, userId }
-→ { answer, confidence, route, showContactCard, conversationId }
+Input: { message, conversationId, userId }
+Output: { answer, confidence, route, conversationId }
 ```
 
-### Messages
+### Health Check
 ```
-GET /api/messages/:conversationId
-→ [{ id, conversation_id, sender, text, created_at }]
-```
-
-### Contact Form
-```
-POST /api/contact
-{ conversationId, department, name, phone, email, message, ... }
-→ { success, message, contactRequestId }
-```
-
-### Team Dashboard
-```
-GET /api/team/requests?department=sales_marketing
-→ [{ id, name, phone, email, message, status, ... }]
-
-POST /api/team/reply
-{ contactRequestId, department, reply }
-→ { success, message }
-
-GET /api/team/reply/:contactRequestId
-→ [{ id, department, reply_text, created_at }]
+GET /health
+Output: { ok, port, kbCount }
 ```
 
 ---
 
-## 🎯 Department Keywords
+## 🎯 Key Features
 
-### Sales & Marketing
-```
-price, pricing, cost, amount, subscription, plan, 
-quote, discount, offer, renewal, contract, package, budget, fee
-```
+**For Users**
+- Easy question answering
+- Handles typos/grammar
+- Professional interface
+- Mobile support
+- Instant responses
 
-### Engineering
-```
-api, integration, technical, bug, error, system, server, 
-deployment, performance, security, backend, database, code, issue
-```
-
-### Support (Default)
-```
-help, support, issue, problem, complaint, assist, 
-urgent, contact, delete
-```
+**For Admin**
+- Easy to add Q&A pairs
+- LLM for flexibility
+- KB-only responses (no hallucination)
+- Conversation tracking
+- Production ready
 
 ---
 
-## 📊 Testing Checklist
+## 💡 Tips
 
-- [ ] **Basic Chat**
-  - [ ] Can open/close chatbot
-  - [ ] Can send messages
-  - [ ] Bot responds with KB answers
-  - [ ] Messages appear in Supabase
-
-- [ ] **Escalation**
-  - [ ] Sales keywords trigger Sales form
-  - [ ] Tech keywords trigger Engineering form
-  - [ ] Other keywords trigger Support form
-  - [ ] Forms submit successfully
-  - [ ] Data appears in Supabase
-
-- [ ] **Team Dashboards**
-  - [ ] Support dashboard shows requests
-  - [ ] Sales dashboard shows sales requests
-  - [ ] Engineering dashboard shows tech requests
-  - [ ] Can read full conversation history
-  - [ ] Can send replies
-  - [ ] Replies appear back in client chat
-
-- [ ] **Mobile**
-  - [ ] Chat drawer is full-width on mobile
-  - [ ] Touch inputs work
-  - [ ] No horizontal scrolling
-  - [ ] Buttons are large enough
-
-- [ ] **Browser**
-  - [ ] Chrome ✅
-  - [ ] Firefox ✅
-  - [ ] Safari ✅
-  - [ ] Edge ✅
+1. **Optimize KB**: Focus on most-asked questions
+2. **Monitor**: Check which questions lack answers
+3. **Update**: Add new Q&A pairs as needed
+4. **Test**: Ask various versions of same question
+5. **Expand**: Add more categories over time
 
 ---
 
-## ⚙️ Configuration Reference
+## 📖 Full Documentation
 
-### Knowledge Base
-**File**: `/knowledge/english_version.txt`
-**Format**: 
-```
-Client: Question?
-Bot: Answer text.
-```
-**Chunk Size**: ~500-1000 characters (in knowledgeBase.js, line 27)
-
-### LLM Prompt
-**File**: `/server/llmService.js`, line 18
-**Edit**: `const systemPrompt = ...`
-
-### UI Colors
-**File**: `/client/public/css/style.css`, lines 1-10
-**Variables**: --primary-black, --primary-white, --light-gray, etc.
-
-### Port Numbers
-**Backend**: Port 3000 (in server/.env)
-**Frontend**: Port 3001 (in client/.env)
-
-### Auto-Refresh
-**Team Dashboard**: Every 10 seconds (in team-dashboard.js, line ~150)
+- **Implementation**: `IMPLEMENTATION_SUMMARY.md`
+- **Setup**: `SETUP.md`
+- **Troubleshooting**: `FIX_REPORT.md`
+- **Testing**: `WIDGET_TESTING_GUIDE.md`
 
 ---
 
-## 🔒 Security Reminders
-
-- ✅ Never commit `.env` files
-- ✅ Never share LLM_API_KEY
-- ✅ Use SERVICE_ROLE_KEY only on backend
-- ✅ ANON_KEY is safe for frontend
-- ✅ Add authentication before production
-- ✅ Enable RLS (Row-Level Security) on Supabase
-- ✅ Validate all form inputs
-- ✅ Use HTTPS in production
-
----
-
-## 💰 Cost Estimates
-
-- **Supabase**: Free tier up to 10K API calls/month
-- **LLM**: Depends on provider (monitor usage)
-- **Hosting**: $5-50/month depending on traffic
-- **Domain**: $10-15/year
-
----
-
-## 📞 If Something Breaks
-
-1. **Check Error Console**
-   - F12 → Console tab
-   - Look for red error messages
-
-2. **Check Server Logs**
-   - Look at terminal where `npm start` was run
-   - Server errors appear there
-
-3. **Verify Credentials**
-   - `.env` file exists and has values
-   - Supabase URL is correct
-   - LLM API key is valid
-
-4. **Restart Both Servers**
-   - Kill both terminals (Ctrl+C)
-   - Run `npm start` again
-
-5. **Clear Cache**
-   - Browser: Ctrl+Shift+Delete (or Cmd+Shift+Delete)
-   - LocalStorage: F12 → Application → Clear
-
-6. **Check Database**
-   - Supabase dashboard → Tables
-   - Verify all 4 tables exist with data
-
----
-
-## 🎓 Learning Resources
-
-- **JavaScript Basics**: https://developer.mozilla.org/en-US/docs/Web/JavaScript
-- **Express.js**: https://expressjs.com/
-- **Supabase**: https://supabase.com/docs
-- **REST APIs**: https://developer.mozilla.org/en-US/docs/Glossary/REST
-
----
-
-## 📈 Next Steps After Launch
-
-1. Monitor usage & performance
-2. Update knowledge base with new Q&As
-3. Train team on dashboards
-4. Gather user feedback
-5. Optimize LLM prompts
-6. Add more departments if needed
-7. Implement authentication
-8. Setup analytics
-9. Create backup strategy
-10. Plan scaling for growth
-
----
-
-**🚀 You're all set! Deploy with confidence!**
-
-Questions? Check README.md, SETUP.md, or IMPLEMENTATION_GUIDE.md
-
-Last Updated: January 2026 | Version 1.0.0
+**Status:** ✅ Production Ready | **Version:** 2.0 | **Last Updated:** 2024
