@@ -11,10 +11,15 @@ const app = express();
 const PORT = process.env.PORT || 3000;
 
 // Train KB at startup
+console.log('🚀 Starting server initialization...');
 try {
   if (typeof knowledgeBase.trainKnowledgeBase === 'function') {
     knowledgeBase.trainKnowledgeBase();
-    console.log(`📚 KB Loaded at startup: ${knowledgeBase.getKbCount?.() ?? 0}`);
+    const kbCount = knowledgeBase.getKbCount?.() ?? 0;
+    console.log(`📚 KB Loaded at startup: ${kbCount} Q&A pairs`);
+    if (kbCount === 0) {
+      console.warn('⚠️ WARNING: KB loaded with 0 entries!');
+    }
   }
 } catch (e) {
   console.log('❌ KB training failed:', e.message);
