@@ -12,8 +12,8 @@
     return 'https://server-three-black.vercel.app'; // Production Vercel
   };
 
-  // Anu Chatbot Icon - Simple, Bold SVG
-  const ANU_ICON = 'data:image/svg+xml,%3Csvg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100"%3E%3Ccircle cx="50" cy="50" r="50" fill="%236366f1"/%3E%3Ctext x="50" y="60" font-size="48" font-weight="bold" fill="white" text-anchor="middle" font-family="Arial, sans-serif"%3EA%3C/text%3E%3C/svg%3E';
+  // Anu Chatbot Icon - Chat Bubble Icon SVG
+  const ANU_ICON = 'data:image/svg+xml,%3Csvg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100"%3E%3Ccircle cx="50" cy="50" r="50" fill="%236366f1"/%3E%3Cpath d="M 25 30 Q 25 20 35 20 L 65 20 Q 75 20 75 30 L 75 55 Q 75 65 65 65 L 40 65 L 30 75 L 35 65 L 35 65 Q 25 65 25 55 Z" fill="white" stroke="white" stroke-width="1"/%3E%3Ccircle cx="35" cy="42" r="3" fill="%236366f1"/%3E%3Ccircle cx="50" cy="42" r="3" fill="%236366f1"/%3E%3Ccircle cx="65" cy="42" r="3" fill="%236366f1"/%3E%3C/svg%3E';
 
   const CONFIG = {
     default: {
@@ -528,7 +528,6 @@
             </div>
             <div class="aitel-widget-header-content">
               <h3>${config.NAME}</h3>
-              <p class="aitel-widget-header-subtitle">Your AI Assistant</p>
             </div>
           </div>
 
