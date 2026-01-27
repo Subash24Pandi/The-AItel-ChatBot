@@ -12,8 +12,8 @@
     return 'https://server-three-black.vercel.app'; // Production Vercel
   };
 
-  // Anu Chatbot Icon - Stylish AI Assistant SVG
-  const ANU_ICON = 'data:image/svg+xml,%3Csvg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100"%3E%3Cdefs%3E%3ClinearGradient id="anuGrad" x1="0%25" y1="0%25" x2="100%25" y2="100%25"%3E%3Cstop offset="0%25" style="stop-color:%236366f1;stop-opacity:1" /%3E%3Cstop offset="100%25" style="stop-color:%238b5cf6;stop-opacity:1" /%3E%3C/linearGradient%3E%3C/defs%3E%3Ccircle cx="50" cy="50" r="50" fill="url(%23anuGrad)"/%3E%3Crect x="30" y="28" width="40" height="36" rx="8" fill="white" opacity="0.95"/%3E%3Ccircle cx="39" cy="38" r="2.5" fill="%236366f1"/%3E%3Ccircle cx="61" cy="38" r="2.5" fill="%236366f1"/%3E%3Cpath d="M 39 52 Q 50 58 61 52" stroke="%236366f1" stroke-width="2" fill="none" stroke-linecap="round"/%3E%3Cpath d="M 35 32 L 40 28 M 65 32 L 60 28" stroke="white" stroke-width="1.5" fill="none" stroke-linecap="round" opacity="0.7"/%3E%3C/svg%3E';
+  // Anu Chatbot Icon - Simple, Bold SVG
+  const ANU_ICON = 'data:image/svg+xml,%3Csvg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100"%3E%3Ccircle cx="50" cy="50" r="50" fill="%236366f1"/%3E%3Ctext x="50" y="60" font-size="48" font-weight="bold" fill="white" text-anchor="middle" font-family="Arial, sans-serif"%3EA%3C/text%3E%3C/svg%3E';
 
   const CONFIG = {
     default: {
@@ -86,11 +86,10 @@
         }
 
         .aitel-widget-btn img {
-          width: 76%;
-          height: 76%;
+          width: 80%;
+          height: 80%;
           object-fit: contain;
           z-index: 1;
-          filter: drop-shadow(0 2px 4px rgba(0, 0, 0, 0.1));
         }
 
         .aitel-widget-btn:hover {
@@ -159,7 +158,7 @@
         .aitel-widget-header-icon {
           width: 56px;
           height: 56px;
-          background: rgba(255, 255, 255, 0.25);
+          background: rgba(255, 255, 255, 0.2);
           border-radius: 14px;
           display: flex;
           align-items: center;
@@ -169,10 +168,9 @@
         }
 
         .aitel-widget-header-icon img {
-          width: 38px;
-          height: 38px;
+          width: 42px;
+          height: 42px;
           object-fit: contain;
-          filter: drop-shadow(0 2px 4px rgba(0, 0, 0, 0.1));
         }
 
         .aitel-widget-header-content {
