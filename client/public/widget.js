@@ -12,8 +12,8 @@
     return 'https://server-three-black.vercel.app'; // Production Vercel
   };
 
-  // Anu Chatbot Icon - Chat Bubble Icon SVG
-  const ANU_ICON = 'data:image/svg+xml,%3Csvg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100"%3E%3Ccircle cx="50" cy="50" r="50" fill="%236366f1"/%3E%3Cpath d="M 25 30 Q 25 20 35 20 L 65 20 Q 75 20 75 30 L 75 55 Q 75 65 65 65 L 40 65 L 30 75 L 35 65 L 35 65 Q 25 65 25 55 Z" fill="white" stroke="white" stroke-width="1"/%3E%3Ccircle cx="35" cy="42" r="3" fill="%236366f1"/%3E%3Ccircle cx="50" cy="42" r="3" fill="%236366f1"/%3E%3Ccircle cx="65" cy="42" r="3" fill="%236366f1"/%3E%3C/svg%3E';
+  // Anu Chatbot Icon - Simple Purple Circle with Text
+  const ANU_ICON = 'data:image/svg+xml,%3Csvg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100"%3E%3Ccircle cx="50" cy="50" r="50" fill="%236366f1"/%3E%3Ctext x="50" y="65" font-size="40" font-weight="bold" fill="white" text-anchor="middle" font-family="Arial, sans-serif"%3EAnu%3C/text%3E%3C/svg%3E';
 
   const CONFIG = {
     default: {
@@ -723,13 +723,23 @@
             this.saveSession();
           }
           
-          // Check if we should show a contact popup
-          const messageText = data.answer.toLowerCase();
-          const route = data.route || '';
+          // Trigger contact forms based on KB and content
+          const messageText = message.toLowerCase();
+          const answerText = data.answer.toLowerCase();
           
-          if ((route === 'sales_marketing' || messageText.includes('sales') || messageText.includes('pricing') || messageText.includes('budget')) && data.showContactCard !== false) {
+          // Sales contact: packages, amounts, discounts, pricing, costs
+          if (messageText.includes('package') || messageText.includes('amount') || 
+              messageText.includes('discount') || messageText.includes('price') || 
+              messageText.includes('cost') || messageText.includes('pricing') ||
+              messageText.includes('budget') || messageText.includes('plan')) {
             setTimeout(() => this.showContactForm('sales'), 800);
-          } else if ((route === 'engineers' || messageText.includes('engineer') || messageText.includes('developer') || messageText.includes('api') || messageText.includes('technical')) && data.showContactCard !== false) {
+          } 
+          // Engineer contact: Question outside knowledge base
+          else if (data.route === 'llm_fallback' || data.confidence < 0.4 || 
+                   answerText.includes('don\'t have information') || 
+                   answerText.includes('not available') ||
+                   answerText.includes('outside') ||
+                   data.usedLLMFallback === true) {
             setTimeout(() => this.showContactForm('engineers'), 800);
           }
         } else {
