@@ -307,46 +307,7 @@
           box-shadow: 0 3px 10px rgba(99, 102, 241, 0.35);
         }
 
-        /* ===== TYPING INDICATOR ===== */
-        .aitel-typing-indicator {
-          display: flex;
-          align-items: center;
-          gap: 4px;
-          padding: 12px 15px;
-          background: white;
-          border: 1px solid #e5e7eb;
-          border-radius: 14px;
-          align-self: flex-start;
-          color: #666;
-          font-size: 13px;
-        }
 
-        .aitel-typing-indicator span {
-          width: 6px;
-          height: 6px;
-          border-radius: 50%;
-          background: #6366f1;
-          animation: typing 1.4s infinite;
-        }
-
-        .aitel-typing-indicator span:nth-child(2) {
-          animation-delay: 0.2s;
-        }
-
-        .aitel-typing-indicator span:nth-child(3) {
-          animation-delay: 0.4s;
-        }
-
-        @keyframes typing {
-          0%, 60%, 100% {
-            opacity: 0.3;
-            transform: translateY(0);
-          }
-          30% {
-            opacity: 1;
-            transform: translateY(-8px);
-          }
-        }
 
         /* ===== INPUT AREA ===== */
         .aitel-widget-input-box {
@@ -749,22 +710,7 @@
       messagesContainer.scrollTop = messagesContainer.scrollHeight;
     }
 
-    displayTypingIndicator() {
-      const messagesContainer = document.getElementById('aitelWidgetMessages');
-      const typingDiv = document.createElement('div');
-      typingDiv.className = 'aitel-typing-indicator';
-      typingDiv.id = 'aitel-typing-indicator';
-      typingDiv.innerHTML = '<span></span><span></span><span></span>';
-      messagesContainer.appendChild(typingDiv);
-      messagesContainer.scrollTop = messagesContainer.scrollHeight;
-    }
 
-    removeTypingIndicator() {
-      const typingDiv = document.getElementById('aitel-typing-indicator');
-      if (typingDiv) {
-        typingDiv.remove();
-      }
-    }
 
     async sendMessage() {
       const input = document.getElementById('aitelWidgetInput');
@@ -776,9 +722,6 @@
       input.value = '';
       input.focus();
       this.isLoading = true;
-      
-      // Show typing indicator
-      this.displayTypingIndicator();
 
       try {
         const chatEndpoint = `${config.API_URL}/api/chat`;
@@ -797,9 +740,6 @@
         }
 
         const data = await response.json();
-
-        // Remove typing indicator
-        this.removeTypingIndicator();
 
         if (data.answer) {
           // Stream the response character by character
@@ -845,7 +785,6 @@
         }
       } catch (error) {
         console.error('Chat error:', error);
-        this.removeTypingIndicator();
         this.displayMessage('Connection error. Please check your internet and try again.', 'bot');
       } finally {
         this.isLoading = false;
