@@ -22,6 +22,7 @@ function levenshtein(a = '', b = '') {
 
 const fs = require('fs');
 const path = require('path');
+const EMBEDDED_KB = require('./kbData');
 
 let KB = [];
 let chunks = [];
@@ -86,6 +87,9 @@ function parseKnowledgeFile(rawText) {
 
 function trainKnowledgeBase() {
   try {
+    let rawData = null;
+    let kbPath = null;
+
     // Try multiple paths to find the KB file
     const possiblePaths = [
       path.join(__dirname, 'english_version.txt'),                          // ./server/english_version.txt
@@ -95,25 +99,28 @@ function trainKnowledgeBase() {
       path.join(process.cwd(), 'knowledge', 'english_version.txt'),        // Vercel root: ./knowledge/english_version.txt
     ];
 
-    let kbPath = null;
+    // Try to find and load the file from disk
     for (const candidate of possiblePaths) {
       if (fs.existsSync(candidate)) {
-        kbPath = candidate;
-        console.log(`📍 Found KB at: ${kbPath}`);
-        break;
+        try {
+          rawData = fs.readFileSync(candidate, 'utf8');
+          kbPath = candidate;
+          console.log(`📍 KB loaded from file: ${kbPath}`);
+          break;
+        } catch (e) {
+          console.log(`⚠️ Failed to read KB file at ${candidate}: ${e.message}`);
+        }
       }
     }
-    
-    if (!kbPath) {
-      console.log('⚠️ Knowledge file not found at any location:');
-      possiblePaths.forEach(p => console.log(`   - ${p}`));
-      KB.length = 0;
-      chunks.length = 0;
-      return;
+
+    // If file not found, use embedded KB as fallback
+    if (!rawData) {
+      console.log(`📍 KB file not found on disk, using embedded KB data`);
+      rawData = EMBEDDED_KB;
     }
 
-    const raw = fs.readFileSync(kbPath, 'utf8');
-    const entries = parseKnowledgeFile(raw);
+    // Parse the KB data
+    const entries = parseKnowledgeFile(rawData);
 
     KB.length = 0;
     KB.push(...entries);
@@ -121,7 +128,7 @@ function trainKnowledgeBase() {
     chunks.length = 0;
     chunks.push(...KB.map(e => `Q: ${e.q}\nA: ${e.a}`));
 
-    console.log(`📚 KB loaded: ${KB.length} Q&A pairs from ${kbPath}`);
+    console.log(`📚 KB loaded successfully: ${KB.length} Q&A pairs`);
   } catch (e) {
     console.log('❌ KB train error:', e.message);
     KB.length = 0;

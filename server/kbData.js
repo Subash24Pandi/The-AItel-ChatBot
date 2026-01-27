@@ -1,0 +1,184 @@
+// Knowledge base data - embedded as fallback for Vercel deployment
+// This contains all Q&A pairs for the Aitel chatbot
+const EMBEDDED_KB_DATA = `AITEL AI AGENT PLATFORM - KNOWLEDGE BASE
+
+
+=== LOGIN AND DASHBOARD ===
+
+Q: Hello
+A: Hello! Welcome to Aitel AI Agent Platform. How can I assist you today?
+
+Q: Hi
+A: Hello! Welcome to Aitel AI Agent Platform. How can I assist you today?
+
+Q: Good Morning
+A: Hello! Welcome to Aitel AI Agent Platform. How can I assist you today?
+
+Q: Good Afternoon
+A: Hello! Welcome to Aitel AI Agent Platform. How can I assist you today?
+
+Q: Good Evening
+A: Hello! Welcome to Aitel AI Agent Platform. How can I assist you today?
+
+Q: How do I log in?
+A: Select the client portal, enter your mobile number, you will receive an OTP. Enter the OTP and log in.
+
+Q: OTP entered but login not successful
+A: I'm sorry to hear that you're having trouble with login. Let me connect you with our support team for detailed assistance.
+
+Q: How do I view the overview?
+A: After logging in, there is a dashboard button on the left side. Tap it to view the overview.
+
+
+=== AGENTS PAGE ===
+
+Q: How can I see my agents?
+A: Go to the dashboard and tap on the "My Agents" button.
+
+Q: Where can I see my agents?
+A: Go to the dashboard and tap on the "My Agents" button.
+
+Q: How many agents do I have?
+A: Go to the dashboard and tap on the "My Agents" button to see all your agents.
+
+Q: What are my agents' names?
+A: Go to the dashboard and tap on the "My Agents" button to view your agents' names.
+
+Q: When were my agents assigned?
+A: Go to the dashboard and tap on the "My Agents" button to view the assignment details.
+
+Q: How do I search for agents?
+A: Go to Dashboard → My Agents, use the search option at the top to search for agents.
+
+Q: How do I check my agent prompt?
+A: Go to Dashboard → My Agents, tap the three dots next to the agent name, select "Prompt" to view it.
+
+Q: How do I deactivate or delete an active agent?
+A: Agents cannot be deleted by the user. If you need to delete an agent, please contact our support team.
+
+
+=== PHONE NUMBER ===
+
+Q: How do I view my AI agent mobile number?
+A: Go to Dashboard → Phone Number option to view the mobile number.
+
+Q: How do I view my assistant mobile number?
+A: Go to Dashboard → Phone Number option to view the mobile number.
+
+Q: How do I search for my agent's mobile number?
+A: Go to Dashboard → Phone Number option and use the search option.
+
+Q: How do I check my mobile number provider?
+A: Go to Dashboard → Phone Number option to view the provider name.
+
+
+=== MAKE A CALL ===
+
+Q: How do I initiate a manual call?
+A: Go to Dashboard → Make a Call option, select "Initiate a Manual Call", choose an agent, enter the destination number, and make the call.
+
+Q: How do I make a call?
+A: Go to Dashboard → Make a Call option, select "Initiate a Manual Call", choose an agent, enter the destination number, and make the call.
+
+
+=== CALL HISTORY ===
+
+Q: How do I check my call history?
+A: Go to Dashboard → Call History to view all call records.
+
+Q: How do I view only completed calls?
+A: Go to Dashboard → Call History → Completed.
+
+Q: How do I view in-progress calls?
+A: Go to Dashboard → Call History → In Progress.
+
+Q: How do I view failed calls?
+A: Go to Dashboard → Call History → Failed.
+
+Q: How do I view no-answer calls?
+A: Go to Dashboard → Call History → No Answer.
+
+Q: How do I check call status?
+A: Go to Dashboard → Call History and check the status column.
+
+Q: How do I check call duration?
+A: Go to Dashboard → Call History and check the duration column.
+
+Q: How do I check call date and time?
+A: Go to Dashboard → Call History and check the date and time column.
+
+Q: How do I view call transcripts?
+A: Go to Dashboard → Call History, under the action column tap the first icon to view the transcript.
+
+Q: How do I listen to call recordings?
+A: Go to Dashboard → Call History, under the action column tap the second icon to listen to the audio recording.
+
+Q: How do I download call text?
+A: Go to Dashboard → Call History, under the action column tap the third download icon.
+
+Q: How do I delete call history?
+A: Call history cannot be deleted by users. If you need assistance with this, please contact our support team.
+
+
+=== CAMPAIGNS ===
+
+Q: How do I create a new campaign?
+A: Go to Dashboard → Campaigns, tap "Create Campaign", upload the CSV file with mobile numbers, and create the campaign.
+
+Q: How do I search for a campaign?
+A: Go to Dashboard → Campaigns and use the search option at the top.
+
+Q: How do I view queued calls?
+A: Go to Dashboard → Campaigns → Queued to view queued calls.
+
+Q: How do I view calls?
+A: Go to Dashboard → Campaigns, tap the view (eye) icon below the created campaign.
+
+Q: How do I check analytics?
+A: Go to Dashboard → Campaigns, tap the Analytics button under the campaign.
+
+Q: How do I check AI analytics?
+A: Go to Dashboard → Campaigns → Analytics → AI Analytics.
+
+Q: How do I sync and analyze?
+A: Go to Dashboard → Campaigns → Analytics → Sync & Analyze.
+
+Q: How do I run a campaign?
+A: Go to Dashboard → Campaigns → View, then tap "Run Campaign".
+
+Q: How do I check campaign call statuses?
+A: Go to Dashboard → Campaigns → View to see connected, not connected, interested, not interested, partially interested, lead status, and failed calls.
+
+Q: How do I delete or remove a campaign?
+A: Tap the three dots on the campaign and select delete.
+
+
+=== TEAM AND SUB-USERS ===
+
+Q: How do I create a sub-user?
+A: Go to Dashboard → Team, tap "Create Team", create monitoring or follow-up teams, then manage the team and create sub-users.
+
+Q: How do I delete or remove a sub-user?
+A: Tap the three dots on the team card and select delete.
+
+
+=== LOGOUT AND CONTACT ===
+
+Q: How do I log out from the client portal?
+A: Go to the bottom of the dashboard and tap Logout.
+
+Q: How do I contact the Aitel team?
+A: Redirect to the contact details card.
+
+Q: Bye
+A: Bye! Thank you for using Aitel AI Agent Platform. Have a great day!
+
+Q: Good night
+A: Bye! Thank you for using Aitel AI Agent Platform. Have a great day!
+
+
+NOTE:
+For any question outside the ones listed above, always redirect the client to the contact details card.
+`;
+
+module.exports = EMBEDDED_KB_DATA;
