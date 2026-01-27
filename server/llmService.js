@@ -20,7 +20,7 @@ class LLMService {
     console.log(`   Supabase JWT: ${this.supabaseAnonKey ? '✅ SET' : '❌ NOT SET'}`);
 
     this.http = axios.create({
-      timeout: 30000,
+      timeout: 10000, // Reduced from 30s to 10s to fail faster
       headers: {
         'Content-Type': 'application/json',
         ...(this.supabaseAnonKey

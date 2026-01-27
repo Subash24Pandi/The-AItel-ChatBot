@@ -89,6 +89,7 @@ function trainKnowledgeBase() {
   try {
     let rawData = null;
     let kbPath = null;
+    let useEmbedded = false;
 
     // Try multiple paths to find the KB file
     const possiblePaths = [
@@ -113,10 +114,17 @@ function trainKnowledgeBase() {
       }
     }
 
-    // If file not found, use embedded KB as fallback
+    // If file not found on disk, use embedded KB as fallback
     if (!rawData) {
-      console.log(`📍 KB file not found on disk, using embedded KB data`);
+      console.log(`📍 KB file not found on disk, using embedded KB data as fallback`);
+      if (!EMBEDDED_KB || !EMBEDDED_KB.trim()) {
+        console.error('❌ FATAL: Embedded KB data is missing or empty!');
+        KB.length = 0;
+        chunks.length = 0;
+        return;
+      }
       rawData = EMBEDDED_KB;
+      useEmbedded = true;
     }
 
     // Parse the KB data
@@ -128,9 +136,15 @@ function trainKnowledgeBase() {
     chunks.length = 0;
     chunks.push(...KB.map(e => `Q: ${e.q}\nA: ${e.a}`));
 
-    console.log(`📚 KB loaded successfully: ${KB.length} Q&A pairs`);
+    const source = useEmbedded ? 'embedded' : 'file';
+    console.log(`📚 KB loaded successfully: ${KB.length} Q&A pairs from ${source}`);
+    
+    if (KB.length === 0) {
+      console.error('❌ WARNING: KB loaded with 0 entries! This is not normal.');
+    }
   } catch (e) {
-    console.log('❌ KB train error:', e.message);
+    console.error('❌ KB train error:', e.message);
+    console.error('   Stack:', e.stack);
     KB.length = 0;
     chunks.length = 0;
   }

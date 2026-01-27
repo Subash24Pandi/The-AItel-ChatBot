@@ -65,12 +65,21 @@ app.get('/health', (req, res) => {
     ok: true,
     port: PORT,
     kbCount: kbCount,
+    kbLoaded: kbCount > 0,
     nodeEnv: process.env.NODE_ENV || 'development',
     cwd: process.cwd(),
     __dirname: __dirname,
-    version: '2.1' // Updated version number
+    version: '2.2'
   };
   res.json(debugInfo);
+});
+
+// Force KB reload endpoint for debugging
+app.post('/health/reload-kb', (req, res) => {
+  console.log('🔄 Manual KB reload triggered...');
+  knowledgeBase.trainKnowledgeBase();
+  const kbCount = knowledgeBase.getKbCount?.() ?? 0;
+  res.json({ success: true, kbCount, message: `KB reloaded: ${kbCount} Q&A pairs` });
 });
 
 app.get('/api/messages/:conversationId', async (req, res) => {
@@ -126,19 +135,31 @@ User question: "${message}"
 
 Return only the normalized question, nothing else:`;
 
-      const normResponse = await llmService.chat(
+      // Create a timeout wrapper for LLM call
+      const llmTimeoutMs = 5000; // 5 second max timeout
+      const llmPromise = llmService.chat(
         [{ role: 'user', content: normalizationPrompt }],
         ''
       );
+
+      const timeoutPromise = new Promise((resolve) => {
+        setTimeout(() => {
+          resolve({ success: false, message: '', error: 'LLM_TIMEOUT' });
+        }, llmTimeoutMs);
+      });
+
+      const normResponse = await Promise.race([llmPromise, timeoutPromise]);
 
       if (normResponse.success && normResponse.message) {
         normalizedQuestion = (normResponse.message || '').trim();
         llmUsedForNormalization = true;
         console.log(`📝 Question normalized: "${message}" → "${normalizedQuestion}"`);
+      } else {
+        console.log(`⚠️ LLM normalization skipped (${normResponse.error || 'failed'}), using original question`);
       }
     } catch (e) {
       // If LLM fails for normalization, use original question
-      console.log('⚠️ LLM normalization failed, using original question');
+      console.log('⚠️ LLM normalization exception:', e.message, '- using original question');
     }
 
     // Step 2: Search KB with both original and normalized questions
