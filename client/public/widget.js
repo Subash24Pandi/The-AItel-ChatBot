@@ -761,31 +761,27 @@
             this.saveSession();
           }
           
-          // Trigger contact forms based on KB and content - STRICT MODE
-          const messageText = message.toLowerCase();
+          // Trigger contact forms
+          const messageText = message.toLowerCase().trim();
           const answerText = data.answer.toLowerCase();
           
-          // Check if it's a greeting
-          const isGreeting = ['hi', 'hello', 'hey', 'ok', 'okay', 'thanks', 'thank you', 'yes', 'no'].includes(messageText);
+          // Check if it's a simple greeting
+          const greetings = ['hi', 'hello', 'hey', 'ok', 'okay', 'thanks', 'thank you', 'yes', 'no', 'bye', 'good night'];
+          const isGreeting = greetings.includes(messageText);
           
-          // Show Sales popup if user asked about pricing/budget keywords
-          if (!isGreeting && (messageText.includes('package') || messageText.includes('amount') || 
-              messageText.includes('discount') || messageText.includes('price') || 
-              messageText.includes('cost') || messageText.includes('pricing') ||
-              messageText.includes('budget') || messageText.includes('plan'))) {
-            console.log('Triggering sales form for message:', messageText);
-            setTimeout(() => {
-              console.log('Opening sales form');
-              this.showContactForm('sales');
-            }, 300);
+          // Sales keywords
+          const salesKeywords = ['price', 'pricing', 'cost', 'budget', 'package', 'plan', 'amount', 'discount', 'fee', 'charge', 'rate'];
+          const hasSalesKeyword = salesKeywords.some(keyword => messageText.includes(keyword));
+          
+          // Show Sales popup for pricing questions
+          if (!isGreeting && hasSalesKeyword) {
+            console.log('✓ Sales form triggered:', messageText);
+            setTimeout(() => this.showContactForm('sales'), 300);
           } 
-          // Show Engineer popup if question is outside KB (LLM fallback)
+          // Show Engineer popup for LLM fallback (questions outside KB)
           else if (!isGreeting && data.route === 'llm_fallback') {
-            console.log('Triggering engineers form for LLM fallback');
-            setTimeout(() => {
-              console.log('Opening engineers form');
-              this.showContactForm('engineers');
-            }, 300);
+            console.log('✓ Engineers form triggered - LLM fallback');
+            setTimeout(() => this.showContactForm('engineers'), 300);
           }
         } else {
           this.displayMessage('I apologize, but I encountered an issue. Please try again.', 'bot');
@@ -799,79 +795,98 @@
     }
 
     showContactForm(department) {
-      const overlay = document.getElementById('aitelWidgetModalOverlay');
-      const modal = document.getElementById('aitelWidgetModal');
+      try {
+        const overlay = document.getElementById('aitelWidgetModalOverlay');
+        const modal = document.getElementById('aitelWidgetModal');
 
-      if (!overlay || !modal) {
-        console.error('Modal elements not found:', { overlay: !!overlay, modal: !!modal });
-        return;
-      }
-
-      console.log('Modal elements found, showing', department, 'form');
-
-      const forms = {
-        sales: `
-          <h2>Connect with Sales</h2>
-          <p>Tell us about your needs so our sales team can assist you.</p>
-          <form class="aitel-contact-form" data-department="sales">
-            <input type="text" placeholder="Your Name" required />
-            <input type="email" placeholder="Email Address" required />
-            <input type="tel" placeholder="Phone Number" required />
-            <input type="text" placeholder="Company Name" required />
-            <select required>
-              <option value="">-- Select Budget Range --</option>
-              <option value="under-5k">Under $5,000</option>
-              <option value="5k-20k">$5,000 - $20,000</option>
-              <option value="20k-100k">$20,000 - $100,000</option>
-              <option value="above-100k">Above $100,000</option>
-            </select>
-            <textarea placeholder="Tell us about your needs..." required></textarea>
-            <button type="submit">Send to Sales Team</button>
-            <button type="button" class="close-form">Cancel</button>
-          </form>
-        `,
-        engineers: `
-          <h2>Connect with Engineers</h2>
-          <p>Our technical team is ready to discuss your requirements.</p>
-          <form class="aitel-contact-form" data-department="engineers">
-            <input type="text" placeholder="Your Name" required />
-            <input type="email" placeholder="Email Address" required />
-            <input type="tel" placeholder="Phone Number" required />
-            <input type="text" placeholder="Company Name" required />
-            <select required>
-              <option value="">-- Select Product Module --</option>
-              <option value="agents">AI Agents</option>
-              <option value="phone-numbers">Phone Numbers</option>
-              <option value="call-history">Call History</option>
-              <option value="campaigns">Campaigns</option>
-              <option value="api">API Integration</option>
-            </select>
-            <textarea placeholder="Describe your technical requirements..." required></textarea>
-            <button type="submit">Contact Engineering Team</button>
-            <button type="button" class="close-form">Cancel</button>
-          </form>
-        `
-      };
-
-      modal.innerHTML = forms[department] || forms.sales;
-      overlay.style.display = 'flex';
-
-      // Attach form handlers
-      const form = modal.querySelector('form');
-      const closeBtn = modal.querySelector('.close-form');
-
-      form.addEventListener('submit', (e) => this.handleContactForm(e, department));
-      closeBtn.addEventListener('click', () => {
-        overlay.style.display = 'none';
-        modal.innerHTML = '';
-      });
-
-      overlay.addEventListener('click', (e) => {
-        if (e.target === overlay) {
-          overlay.style.display = 'none';
-          modal.innerHTML = '';
+        if (!overlay || !modal) {
+          console.error('❌ Modal elements not found');
+          return;
         }
-      });
+
+        console.log('✓ Modal elements found, showing', department, 'form');
+
+        const forms = {
+          sales: `
+            <h2>Connect with Sales</h2>
+            <p>Tell us about your needs so our sales team can assist you.</p>
+            <form class="aitel-contact-form" data-department="sales">
+              <input type="text" placeholder="Your Name" required />
+              <input type="email" placeholder="Email Address" required />
+              <input type="tel" placeholder="Phone Number" required />
+              <input type="text" placeholder="Company Name" required />
+              <select required>
+                <option value="">-- Select Budget Range --</option>
+                <option value="under-5k">Under $5,000</option>
+                <option value="5k-20k">$5,000 - $20,000</option>
+                <option value="20k-100k">$20,000 - $100,000</option>
+                <option value="above-100k">Above $100,000</option>
+              </select>
+              <textarea placeholder="Tell us about your needs..." required></textarea>
+              <button type="submit">Send to Sales Team</button>
+              <button type="button" class="close-form">Cancel</button>
+            </form>
+          `,
+          engineers: `
+            <h2>Connect with Engineers</h2>
+            <p>Our technical team is ready to discuss your requirements.</p>
+            <form class="aitel-contact-form" data-department="engineers">
+              <input type="text" placeholder="Your Name" required />
+              <input type="email" placeholder="Email Address" required />
+              <input type="tel" placeholder="Phone Number" required />
+              <input type="text" placeholder="Company Name" required />
+              <select required>
+                <option value="">-- Select Product Module --</option>
+                <option value="agents">AI Agents</option>
+                <option value="phone-numbers">Phone Numbers</option>
+                <option value="call-history">Call History</option>
+                <option value="campaigns">Campaigns</option>
+                <option value="api">API Integration</option>
+              </select>
+              <textarea placeholder="Describe your technical requirements..." required></textarea>
+              <button type="submit">Contact Engineering Team</button>
+              <button type="button" class="close-form">Cancel</button>
+            </form>
+          `
+        };
+
+        // Set the form HTML
+        modal.innerHTML = forms[department] || forms.sales;
+        
+        // Force display using both style and class
+        overlay.style.display = 'flex';
+        overlay.style.visibility = 'visible';
+        overlay.style.opacity = '1';
+
+        // Get form and close button after content is set
+        const form = modal.querySelector('form');
+        const closeBtn = modal.querySelector('.close-form');
+
+        if (form && closeBtn) {
+          // Form submission handler
+          form.addEventListener('submit', (e) => this.handleContactForm(e, department));
+          
+          // Close button handler
+          closeBtn.addEventListener('click', () => {
+            overlay.style.display = 'none';
+            modal.innerHTML = '';
+          });
+
+          // Click outside to close
+          overlay.addEventListener('click', (e) => {
+            if (e.target === overlay) {
+              overlay.style.display = 'none';
+              modal.innerHTML = '';
+            }
+          });
+          
+          console.log('✓ Form handlers attached successfully');
+        } else {
+          console.error('❌ Form or close button not found in DOM');
+        }
+      } catch (error) {
+        console.error('❌ Error in showContactForm:', error);
+      }
     }
 
     async handleContactForm(e, department) {
