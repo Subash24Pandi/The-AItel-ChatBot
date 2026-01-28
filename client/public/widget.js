@@ -764,6 +764,7 @@
           // Trigger contact forms
           const messageText = message.toLowerCase().trim();
           const answerText = data.answer.toLowerCase();
+          const route = data.route || '';
           
           // Check if it's a simple greeting
           const greetings = ['hi', 'hello', 'hey', 'ok', 'okay', 'thanks', 'thank you', 'yes', 'no', 'bye', 'good night'];
@@ -778,9 +779,9 @@
             console.log('✓ Sales form triggered:', messageText);
             setTimeout(() => this.showContactForm('sales'), 300);
           } 
-          // Show Engineer popup for LLM fallback (questions outside KB)
-          else if (!isGreeting && data.route === 'llm_fallback') {
-            console.log('✓ Engineers form triggered - LLM fallback');
+          // Show Engineer popup for LLM fallback or contact_suggested (questions outside KB)
+          else if (!isGreeting && (route === 'llm_fallback' || route === 'contact_suggested')) {
+            console.log('✓ Engineers form triggered - route:', route);
             setTimeout(() => this.showContactForm('engineers'), 300);
           }
         } else {

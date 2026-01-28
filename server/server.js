@@ -167,15 +167,14 @@ Return only the normalized question, nothing else:`;
     }
 
     // Step 2: Search KB with both original and normalized questions
-    const KB_THRESHOLD = Number(process.env.KB_THRESHOLD || 0.12);
-    const EFFECTIVE_KB_THRESHOLD = Math.max(KB_THRESHOLD, 0.12);
+    const KB_THRESHOLD = Number(process.env.KB_THRESHOLD || 0.08);
+    const EFFECTIVE_KB_THRESHOLD = Math.max(KB_THRESHOLD, 0.08);
     
-    let kbResult = knowledgeBase.getBestAnswer?.(normalizedQuestion);
+    // Always try KB first - don't use LLM normalization as it interferes
+    let kbResult = knowledgeBase.getBestAnswer?.(message);
     
-    // If normalized search doesn't work well, try original question
-    if (!kbResult || (kbResult.confidence ?? 0) < EFFECTIVE_KB_THRESHOLD) {
-      kbResult = knowledgeBase.getBestAnswer?.(message);
-    }
+    console.log(`🔍 KB Search Result: "${message}" -> confidence: ${kbResult?.confidence || 0}, answer found: ${!!kbResult?.answer}`);
+
 
     // Step 3: Return ONLY KB answer, never LLM-generated content
     // If KB has a good match, return it
