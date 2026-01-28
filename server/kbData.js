@@ -177,6 +177,18 @@ Q: Good night
 A: Bye! Thank you for using Aitel AI Agent Platform. Have a great day!
 
 
+=== CSV FILE UPLOAD ===
+
+Q: How should I structure my CSV file for uploading?
+A: Your CSV file should have a header row with column names. The contact_number column must contain valid phone numbers in the format: contact_number: 1234567890 (10-digit format without spaces or special characters). For example: contact_number,name\n1234567890,John Doe\n9876543210,Jane Smith
+
+Q: What is the expected CSV format?
+A: The CSV file should contain a contact_number column with phone numbers in 10-digit format without spaces. Example: contact_number: 1234567890
+
+Q: Can you show me an example CSV format?
+A: Yes! Here is an example CSV structure:\ncontact_number,name,company\n1234567890,John Doe,Acme Corp\n9876543210,Jane Smith,Tech Solutions\nThe contact_number field must be formatted as: 1234567890 (10 digits only)
+
+
 NOTE:
 For any question outside the ones listed above, always redirect the client to the contact details card.
 `;

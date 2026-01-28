@@ -22,7 +22,7 @@ class TeamDashboard {
 
   async loadRequests() {
     try {
-      const response = await fetch(`${API_URL}/api/team/requests?department=${this.department}`);
+      const response = await fetch(`${API_URL}/api/team/requests/${this.department}`);
       this.requests = await response.json();
       this.renderTicketList();
     } catch (error) {
@@ -89,15 +89,6 @@ class TeamDashboard {
       console.error('Error loading messages:', error);
     }
 
-    // Load team replies
-    let teamReplies = [];
-    try {
-      const response = await fetch(`${API_URL}/api/team/reply/${request.id}`);
-      teamReplies = await response.json();
-    } catch (error) {
-      console.error('Error loading replies:', error);
-    }
-
     let html = `
       <div style="height: 100%; display: flex; flex-direction: column;">
         <div class="ticket-header">
@@ -128,25 +119,6 @@ class TeamDashboard {
               </div>
             </div>
           `).join('')}
-
-          ${teamReplies.length > 0 ? `
-            <div style="margin-top: 16px; padding-top: 16px; border-top: 1px solid #e0e0e0;">
-              <strong style="color: #10b981;">Team Responses:</strong>
-              ${teamReplies.map(reply => `
-                <div class="ticket-message from-team" style="margin-top: 12px;">
-                  <div class="message-bubble">
-                    <div style="font-size: 12px; font-weight: 600; margin-bottom: 4px;">
-                      ${this.teamTitle}
-                    </div>
-                    <div>${reply.reply_text}</div>
-                    <div style="font-size: 11px; margin-top: 4px; opacity: 0.7;">
-                      ${new Date(reply.created_at).toLocaleTimeString('en-US', { hour: '2-digit', minute: '2-digit' })}
-                    </div>
-                  </div>
-                </div>
-              `).join('')}
-            </div>
-          ` : ''}
         </div>
 
         <div class="team-reply-input">
@@ -169,9 +141,9 @@ class TeamDashboard {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
-          contactRequestId: this.selectedRequest.id,
+          conversationId: this.selectedRequest.conversation_id,
           department: this.department,
-          reply: replyText
+          message: replyText
         })
       });
 
@@ -202,8 +174,8 @@ class TeamDashboard {
   }
 
   startAutoRefresh() {
-    // Refresh requests every 10 seconds
-    setInterval(() => this.loadRequests(), 10000);
+    // Refresh requests every 6 seconds for better responsiveness
+    setInterval(() => this.loadRequests(), 6000);
   }
 
   setupEventListeners() {

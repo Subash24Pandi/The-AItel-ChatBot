@@ -745,7 +745,7 @@
           // Stream the response character by character
           const streamBubble = this.streamMessage('bot');
           const answer = data.answer;
-          const delayPerChar = 5; // milliseconds per character (fast streaming)
+          const delayPerChar = 8; // milliseconds per character
           
           for (let i = 0; i < answer.length; i++) {
             await new Promise(resolve => {
@@ -773,11 +773,19 @@
               messageText.includes('discount') || messageText.includes('price') || 
               messageText.includes('cost') || messageText.includes('pricing') ||
               messageText.includes('budget') || messageText.includes('plan'))) {
-            setTimeout(() => this.showContactForm('sales'), 800);
+            console.log('Triggering sales form for message:', messageText);
+            setTimeout(() => {
+              console.log('Opening sales form');
+              this.showContactForm('sales');
+            }, 300);
           } 
           // Show Engineer popup if question is outside KB (LLM fallback)
           else if (!isGreeting && data.route === 'llm_fallback') {
-            setTimeout(() => this.showContactForm('engineers'), 800);
+            console.log('Triggering engineers form for LLM fallback');
+            setTimeout(() => {
+              console.log('Opening engineers form');
+              this.showContactForm('engineers');
+            }, 300);
           }
         } else {
           this.displayMessage('I apologize, but I encountered an issue. Please try again.', 'bot');
@@ -795,9 +803,11 @@
       const modal = document.getElementById('aitelWidgetModal');
 
       if (!overlay || !modal) {
-        console.error('Modal elements not found');
+        console.error('Modal elements not found:', { overlay: !!overlay, modal: !!modal });
         return;
       }
+
+      console.log('Modal elements found, showing', department, 'form');
 
       const forms = {
         sales: `

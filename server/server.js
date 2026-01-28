@@ -140,7 +140,7 @@ User question: "${message}"
 Return only the normalized question, nothing else:`;
 
       // Create a timeout wrapper for LLM call
-      const llmTimeoutMs = 5000; // 5 second max timeout
+      const llmTimeoutMs = 3000; // 3 second max timeout for normalization
       const llmPromise = llmService.chat(
         [{ role: 'user', content: normalizationPrompt }],
         ''
@@ -232,7 +232,7 @@ Provide a helpful, accurate response:`;
         const timeoutPromise = new Promise((resolve) => {
           setTimeout(() => {
             resolve({ success: false, message: '', error: 'LLM_TIMEOUT' });
-          }, 10000); // 10 second timeout for fallback LLM
+          }, 5000); // 5 second timeout for fallback LLM
         });
 
         const llmResponse = await Promise.race([llmPromise, timeoutPromise]);
