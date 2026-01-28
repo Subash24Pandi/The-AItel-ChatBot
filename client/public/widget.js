@@ -811,7 +811,7 @@
           sales: `
             <h2>Connect with Sales</h2>
             <p>Tell us about your needs so our sales team can assist you.</p>
-            <form class="aitel-contact-form" data-department="sales">
+            <form class="aitel-contact-form" data-department="sales_marketing">
               <input type="text" placeholder="Your Name" required />
               <input type="email" placeholder="Email Address" required />
               <input type="tel" placeholder="Phone Number" required />
@@ -904,9 +904,11 @@
       };
 
       // Add department-specific fields
-      if (department === 'sales') {
+      if (department === 'sales' || department === 'sales_marketing') {
         formData.budgetRange = inputs[4].value;
         formData.message = inputs[5].value;
+        // Normalize to API expected format
+        formData.department = 'sales_marketing';
       } else if (department === 'engineers') {
         formData.productModule = inputs[4].value;
         formData.message = inputs[5].value;

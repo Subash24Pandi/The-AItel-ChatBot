@@ -44,6 +44,14 @@ app.get('/team/engineers', (req, res) => {
   res.sendFile(path.join(__dirname, 'public', 'team-engineers.html'));
 });
 
+// Widget embed script (single-line embed support)
+app.get('/widget.js', (req, res) => {
+  const appId = req.query.appId || 'default';
+  res.setHeader('Content-Type', 'application/javascript');
+  res.setHeader('Cache-Control', 'public, max-age=3600');
+  res.sendFile(path.join(__dirname, 'public', 'widget.js'));
+});
+
 // --------------------
 // PROXY ROUTES (Client -> Backend)
 // Frontend calls these on port 3001.
